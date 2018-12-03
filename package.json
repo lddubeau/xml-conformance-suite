@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "A conformance suite for tools that parse XML.",
   "scripts": {
-    "test": "mocha && npm run lint",
+    "test": "mocha",
+    "posttest": "npm run lint",
     "lint": "eslint *.js bin/* \"js/**/*.js\" \"test/**/*.js\"",
     "watch": "mocha --watch"
   },
