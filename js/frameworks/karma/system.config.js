@@ -10,7 +10,8 @@ window.systemJSConfig = {
   },
   map: {
     sax: "npm:sax",
-    saxen: "npm:saxen",
+    saxes: "npm:saxes",
+    xmlchars: "npm:xmlchars",
     minimist: "npm:minimist",
     path: "js/lib/browser-path",
   },

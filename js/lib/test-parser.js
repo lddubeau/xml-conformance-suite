@@ -10,7 +10,7 @@
 
 const path = require("path");
 
-const { Parser } = require("saxen");
+const { SaxesParser } = require("saxes");
 
 /**
  * An XML element.
@@ -438,19 +438,18 @@ class TestParser {
     /** @private */
     this.stack = [];
 
-    const parser = this.parser = new Parser({ proxy: true });
+    const parser = this.parser = new SaxesParser({ position: false });
 
-    parser.on("openTag", (elementData) => {
+    parser.onopentag = (elementData) => {
       const { name } = elementData;
       let el;
       switch (name) {
       case "TEST":
-        el = new Test(elementData.name, elementData.attrs, this.documentBase,
+        el = new Test(name, elementData.attributes, this.documentBase,
                      this.resourceLoader);
         break;
       default:
-        el = new Element(elementData.name, elementData.attrs,
-                         this.documentBase);
+        el = new Element(name, elementData.attributes, this.documentBase);
       }
 
       const topEl = this.stack[0];
@@ -463,35 +462,30 @@ class TestParser {
       }
 
       this.stack.unshift(el);
-    });
+    };
 
-    parser.on("closeTag", () => {
+    parser.onclosetag = () => {
       if (this.stack.length === 0) {
         throw new Error("stack underflow");
       }
       this.stack.shift();
-    });
+    };
 
-    parser.on("text", (value, decodeEntities) => {
+    parser.ontext = (value) => {
       value = value.replace(/[ \t\r\n]+/g, " ").trim();
       if (value === "") {
         return;
       }
 
-      value = decodeEntities(value);
       const topEl = this.stack[0];
       if (topEl) {
         topEl.appendChild(new Text(value));
       }
-    });
+    };
 
-    parser.on("error", (err) => {
+    parser.onerror = (err) => {
       throw err;
-    });
-
-    parser.on("warn", (err) => {
-      throw err;
-    });
+    };
   }
 
   /**
@@ -504,7 +498,7 @@ class TestParser {
    * file.
    */
   parse(text) {
-    this.parser.parse(text.toString());
+    this.parser.write(text.toString()).close();
   }
 }
 
