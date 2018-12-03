@@ -31,8 +31,8 @@
   "devDependencies": {
     "@commitlint/cli": "^7.0.0",
     "@commitlint/config-angular": "^7.0.1",
-    "eslint": "^4.19.1",
-    "eslint-config-lddubeau-base": "^2.2.0",
+    "eslint": "^5.9.0",
+    "eslint-config-lddubeau-base": "^3.0.1",
     "husky": "^0.14.3",
     "karma": "^2.0.2",
     "karma-chai": "^0.1.0",

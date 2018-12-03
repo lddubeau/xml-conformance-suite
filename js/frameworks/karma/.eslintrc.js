@@ -10,7 +10,7 @@ delete es5.extends;
 // And adjust the environment.
 es5.env.node = false;
 es5.env.browser = true;
-es5.rules["prefer-destructuring"] = false;
+es5.rules["prefer-destructuring"] = "off";
 
 module.exports = {
   extends: "../../../.eslintrc.js",

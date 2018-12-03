@@ -152,8 +152,9 @@ exports.makeTests = function makeTests() {
     for (const key of Object.keys(expectations)) {
       const expected = expectations[key];
       // eslint-disable-next-line no-loop-func
-      it(`expects a ${expected} for ${key}`, () =>
-         selection.getTestHandling({
+      it(`expects a ${expected} for ${key}`,
+         // eslint-disable-next-line no-loop-func
+         () => selection.getTestHandling({
            id: "good",
            testType: key,
          }).then(x => expect(x).to.equal(expected)));

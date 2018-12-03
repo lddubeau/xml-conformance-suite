@@ -1,9 +1,9 @@
 "use strict";
 
+const { expect } = require("chai");
+
 const { ResourceLoader } = require("../js/lib/resource-loader");
 const { Element, loadTests, Test, Text } = require("../js/lib/test-parser");
-
-const { expect } = require("chai");
 
 describe("test-parser", () => {
   describe("Element", () => {
