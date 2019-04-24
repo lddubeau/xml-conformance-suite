@@ -7,7 +7,6 @@
 const { spawn } = require("child_process");
 const fs = require("fs");
 const path = require("path");
-const pipe = require("posix-pipe");
 const argparse = require("argparse");
 
 const { ResourceLoader } = require("../js/lib/resource-loader");
@@ -140,15 +139,12 @@ const XSL_TEMPLATE = `\
 function selectCommand(subargs) {
   checkUnrecognized(subargs.__extra);
 
-  // We need to use pipe to pass an actual pipe to the child instead of a
-  // socket, which is what Node passes if we use "pipe" for stdin.
-  const [readEnd, writeEnd] = pipe.pipe();
-  spawn("xsltproc", ["/dev/stdin",
-                     path.join(__dirname, "../cleaned/xmlconf-flattened.xml")],
-        { stdio: [readEnd, "inherit", "inherit"] });
-  fs.write(writeEnd, XSL_TEMPLATE.replace("@@EXPR@@", subargs.expr), () => {
-    fs.closeSync(writeEnd);
-  });
+  const child = spawn("xsltproc",
+                      ["-",
+                       path.join(__dirname, "../cleaned/xmlconf-flattened.xml")],
+                      { stdio: ["pipe", "inherit", "inherit"] });
+  child.stdin.write(XSL_TEMPLATE.replace("@@EXPR@@", subargs.expr));
+  child.stdin.end();
 }
 
 function catCommand(subargs) {
