@@ -1,6 +1,6 @@
 {
   "name": "xml-conformance-suite",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A conformance suite for tools that parse XML.",
   "scripts": {
     "test": "mocha",
