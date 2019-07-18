@@ -28,7 +28,7 @@
     "argparse": "^1.0.10",
     "chai": "^4.2.0",
     "minimist": "^1.2.0",
-    "mocha": "^6.1.4",
+    "mocha": "^6.2.0",
     "saxes": "^3.1.11"
   },
   "devDependencies": {
