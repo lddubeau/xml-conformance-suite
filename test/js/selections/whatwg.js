@@ -8,7 +8,7 @@ const { Selection } = require("../../../js/selections/whatwg");
 
 exports.makeTests = function makeTests() {
   function makeTestObject(overrides) {
-    return Object.assign({
+    return {
       includesRecommendation() {
         return false;
       },
@@ -24,7 +24,8 @@ exports.makeTests = function makeTests() {
       getHasBOM() {
         return Promise.resolve(false);
       },
-    }, overrides);
+      ...overrides,
+    };
   }
 
   const expectations = {

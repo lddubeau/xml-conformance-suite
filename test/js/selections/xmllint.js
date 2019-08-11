@@ -8,7 +8,7 @@ const { Selection } = require("../../../js/selections/xmllint");
 
 exports.makeTests = function makeTests() {
   function makeTestObject(overrides) {
-    return Object.assign({
+    return {
       includesRecommendation() {
         return false;
       },
@@ -18,7 +18,8 @@ exports.makeTests = function makeTests() {
       includesEdition() {
         return true;
       },
-    }, overrides);
+      ...overrides,
+    };
   }
 
   const expectations = {
