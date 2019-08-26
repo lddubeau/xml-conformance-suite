@@ -36,7 +36,7 @@
     "@commitlint/config-angular": "^8.1.0",
     "conventional-changelog-cli": "^2.0.23",
     "eslint": "^6.2.2",
-    "eslint-config-lddubeau-base": "^4.0.1",
+    "eslint-config-lddubeau-base": "^4.0.2",
     "husky": "^3.0.4",
     "karma": "^4.2.0",
     "karma-chai": "^0.1.0",
