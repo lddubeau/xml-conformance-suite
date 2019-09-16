@@ -32,8 +32,8 @@
     "saxes": "^3.1.11"
   },
   "devDependencies": {
-    "@commitlint/cli": "^8.1.0",
-    "@commitlint/config-angular": "^8.1.0",
+    "@commitlint/cli": "^8.2.0",
+    "@commitlint/config-angular": "^8.2.0",
     "conventional-changelog-cli": "^2.0.23",
     "eslint": "^6.4.0",
     "eslint-config-lddubeau-base": "^4.0.2",
