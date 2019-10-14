@@ -29,7 +29,7 @@
     "chai": "^4.2.0",
     "minimist": "^1.2.0",
     "mocha": "^6.2.1",
-    "saxes": "^3.1.11"
+    "saxes": "^4.0.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.2.0",
