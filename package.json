@@ -38,7 +38,7 @@
     "eslint": "^6.5.1",
     "eslint-config-lddubeau-base": "^4.0.2",
     "husky": "^3.0.9",
-    "karma": "^4.4.0",
+    "karma": "^4.4.1",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^3.1.0",
     "karma-firefox-launcher": "^1.2.0",
