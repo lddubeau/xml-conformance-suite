@@ -1,0 +1,46 @@
+{
+  "name": "@xml-conformance-suite/js",
+  "version": "1.2.0",
+  "private": true,
+  "description": "A conformance suite for tools that parse XML.",
+  "keywords": [
+    "XML",
+    "parsing",
+    "parser",
+    "test"
+  ],
+  "homepage": "https://github.com/lddubeau/xml-conformance-suite",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lddubeau/xml-conformance-suite.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lddubeau/xml-conformance-suite/issues"
+  },
+  "author": "Louis-Dominique Dubeau <ldd@lddubeau.com>",
+  "license": "MIT AND W3C-19980720",
+  "dependencies": {
+    "@xml-conformance-suite/test-data": "^1.2.0",
+    "argparse": "^1.0.10",
+    "chai": "^4.2.0",
+    "minimist": "^1.2.0",
+    "mocha": "^6.2.2",
+    "saxes": "^4.0.2"
+  },
+  "scripts": {
+    "copy-src": "mkdir -p build/dist/ && cp -rp src/* build/dist/",
+    "copy-bin": "mkdir -p build/dist && cp -rp bin build/dist/ && sed -i -e's;../src/lib/;../lib/;g' build/dist/bin/*",
+    "clean-package": "mkdir -p build/dist && ../../tasks/clean-package package.json build/dist/package.json",
+    "build": "npm run copy-src && npm run copy-bin && npm run clean-package",
+    "test": "npm run build && mocha",
+    "posttest": "npm run lint",
+    "lint": "eslint bin/* \"src/**/*.js\" \"test/**/*.js\" && npmPkgJsonLint ./package.json",
+    "prepack": "node -e 'require(\"assert\")(!require(\"./package.json\").private)'",
+    "self:pack": "npm run test && cd build/dist/ && (packname=`npm pack --silent`; mv $packname ..; echo $packname)",
+    "prepublishOnly": "npm run pack-npjl",
+    "self:publish": "cd build/dist && npm publish",
+    "version": "versync -b sync -a",
+    "clean": "rm -rf build",
+    "distclean": "rm -rf node_modules && npm run clean"
+  }
+}
