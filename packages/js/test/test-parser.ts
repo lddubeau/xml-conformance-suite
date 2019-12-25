@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
 import { ResourceLoader } from "../build/dist/lib/resource-loader";
-import { Element, loadTests, Test, Text } from "../build/dist/lib/test-parser";
+import { Element, loadTests, Test } from "../build/dist/lib/test-parser";
 
 describe("test-parser", () => {
   describe("Element", () => {
@@ -55,19 +55,6 @@ describe("test-parser", () => {
       });
     });
 
-    describe("#text", () => {
-      it("is an empty string when the element holds nothing", () => {
-        expect(el.text).to.equal("");
-      });
-
-      it("concats the children's text", () => {
-        const parent = new Element("myName", {}, "base");
-        parent.appendChild(new Text("a"));
-        parent.appendChild(new Text("b"));
-        expect(parent.text).to.equal("ab");
-      });
-    });
-
     describe("#base", () => {
       describe("on a top-level element", () => {
         it("without an xml:base, returns the document base", () => {
@@ -115,22 +102,12 @@ describe("test-parser", () => {
         expect(count).to.equal(0);
       });
 
-      it("skips text", () => {
-        const parent = new Element("foo", {}, "myDocumentBase");
-        parent.appendChild(new Text("fnord"));
-        let count = 0;
-        el.walkChildElements(() => count++);
-        expect(count).to.equal(0);
-      });
-
       it("walks child elements", () => {
         const parent = new Element("foo", {}, "myDocumentBase");
-        parent.appendChild(new Text("fnord"));
         const child = new Element("child", {}, "myDocumentBase");
         parent.appendChild(child);
         const grandchild = new Element("grandchild", {}, "myDocumentBase");
         child.appendChild(grandchild);
-        grandchild.appendChild(new Text("fnord"));
         parent.appendChild(new Element("nextchild", {}, "myDocumentBase"));
         const names: string[] = [];
         parent.walkChildElements(walking => {
@@ -368,16 +345,6 @@ describe("test-parser", () => {
       it("returns true if a section matches", () => {
         expect(el.includesSections(["FNORD", "FNORD2", "sa"])).to.be.true;
       });
-    });
-  });
-
-  describe("Text", () => {
-    it("#value holds the textual value of the node", () => {
-      expect(new Text("fnord")).to.have.property("value").equal("fnord");
-    });
-
-    it("#text holds the textual value of the node", () => {
-      expect(new Text("fnord")).to.have.property("text").equal("fnord");
     });
   });
 

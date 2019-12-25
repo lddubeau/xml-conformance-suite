@@ -20,7 +20,7 @@ export class Element {
   /**
    * The children of this element.
    */
-  readonly children: (Element | Text)[] = [];
+  readonly children: Element[] = [];
 
   /**
    * The parent of this element. You should not modify this parameter directly.
@@ -46,7 +46,7 @@ export class Element {
   /**
    * @param child The child to append.
    */
-  appendChild(child: Element | Text): void {
+  appendChild(child: Element): void {
     this.children.push(child);
     child.parent = this;
   }
@@ -67,19 +67,6 @@ export class Element {
     }
 
     return value;
-  }
-
-  /**
-   * The text value of this element, which is the concatenation of the text
-   * value of its children.
-   */
-  get text(): string {
-    let buf = "";
-    for (const child of this.children) {
-      buf += child.text;
-    }
-
-    return buf;
   }
 
   /**
@@ -384,21 +371,6 @@ export class Test extends Element {
 }
 
 /**
- * A text node.
- */
-export class Text {
-  parent: Element | undefined;
-
-  constructor(public readonly value: string) {
-  }
-
-  /** The node, as text. This is equal to ``value``. */
-  get text(): string {
-    return this.value;
-  }
-}
-
-/**
  * A parser tailored for parsing the W3C suite.
  */
 export class TestParser {
@@ -453,18 +425,6 @@ export class TestParser {
         throw new Error("stack underflow");
       }
       this.stack.shift();
-    };
-
-    parser.ontext = value => {
-      value = value.replace(/[ \t\r\n]+/g, " ").trim();
-      if (value === "") {
-        return;
-      }
-
-      const topEl = this.stack[0];
-      if (topEl) {
-        topEl.appendChild(new Text(value));
-      }
     };
 
     parser.onerror = err => {

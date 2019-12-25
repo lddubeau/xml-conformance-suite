@@ -1,6 +1,6 @@
 import { Driver, DriverCtor } from "../../../drivers/base";
 import { ResourceLoader } from "../../../lib/resource-loader";
-import { Element, Test, Text } from "../../../lib/test-parser";
+import { Element, Test } from "../../../lib/test-parser";
 import { Selection, SelectionCtor,
          TestHandling } from "../../../selections/base";
 
@@ -37,10 +37,6 @@ function convertSuite(suite: Element,
     }
 
     const children = await Promise.all(testCases.children.map(child => {
-      if (child instanceof Text) {
-        throw new Error("unexpected Text");
-      }
-
       switch (child.name) {
         case "TESTCASES":
           return handleTestCases(child);
