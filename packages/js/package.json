@@ -28,10 +28,11 @@
     "saxes": "^4.0.2"
   },
   "scripts": {
+    "tsc": "tsc -p src",
     "copy-src": "mkdir -p build/dist/ && cp -rp src/* build/dist/",
-    "copy-bin": "mkdir -p build/dist && cp -rp bin build/dist/ && sed -i -e's;../src/lib/;../lib/;g' build/dist/bin/*",
+    "copy-bin": "mkdir -p build/dist && cp -rp bin build/dist/ && sed -i -e's;../src/cli/;../cli/;g' build/dist/bin/*",
     "clean-package": "mkdir -p build/dist && ../../tasks/clean-package package.json build/dist/package.json",
-    "build": "npm run copy-src && npm run copy-bin && npm run clean-package",
+    "build": "npm run copy-src && npm run tsc && npm run copy-bin && npm run clean-package",
     "test": "npm run build && mocha",
     "posttest": "npm run lint",
     "lint": "eslint bin/* \"src/**/*.js\" \"test/**/*.js\" && npmPkgJsonLint ./package.json",
