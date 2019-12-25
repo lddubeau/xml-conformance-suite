@@ -171,22 +171,24 @@ export class Test extends Element {
    * means "applies to all versions". Or hold the values "1.1" or "1.0".
    */
   get version(): string | undefined {
-    let version = this.attributes.VERSION;
+    const version = this.attributes.VERSION;
+    //
     // The presence of an edition implies that it applies to version 1.0. The
     // DTD says that when EDITION is set, then VERSION should have a single
-    // value but the suite *clearly* does not respect that.
+    // value but the suite *clearly* does not respect that, because there are
+    // many instances of EDITION set and version unset.
     //
     // The suite currently contains two actual values in usage for EDITION: "1 2
     // 3 4" or "5". The latter can only apply to version 1.0, as there is no
     // edition 5 of XML 1.1. The former *could* apply to version 1.1 but
     // specifying editions 3 and 4 does not make sense. The value "1 2" would do
     // just as well. This suggests that it is meant to apply only to XML 1.0.
+    // Therefore, when edition is set, and version is undefined, we assume
+    // version 1.0.
     //
-    if (version === undefined && this.attributes.EDITION !== undefined) {
-      version = "1.0";
-    }
-
-    return version;
+    return (version === undefined && this.attributes.EDITION !== undefined) ?
+      "1.0" :
+      version;
   }
 
   /** The recommendation to which this test applies. */
