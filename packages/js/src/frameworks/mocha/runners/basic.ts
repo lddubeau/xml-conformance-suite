@@ -1,11 +1,14 @@
 /**
  * A mocha runner.
  *
- * To run the tests, execute:
+ * To run the tests, pass this to Mocha with the ``--delay`` option and the
+ * options to select a driver and a selection:
  *
- *     $ (export DRIVER_MODULE_NAME=...; export SELECTOR_MODULE_NAME=...;
- *        mocha [path to this file])
- *
+ * ```terminal
+ * $ mocha --delay [path to this file] \
+ *   --xml-driver=./drivers/xmllint \
+ *   --xml-selection=./selections/xmllint
+ * ```
  * @copyright The contibutors of xml-conformance-suite.
  */
 import { loadModules } from "../../../lib/module-loader";
