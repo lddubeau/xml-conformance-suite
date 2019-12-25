@@ -6,7 +6,7 @@ import { expect } from "chai";
 // select one test out of the lot. All tests will be *built* but not all will be
 // *run*.
 describe("mocha", function mocha(): void {
-  this.timeout(3000);
+  this.timeout(5000);
   it("runs", done => {
     spawn("./node_modules/.bin/mocha",
           ["--delay",
