@@ -8,6 +8,22 @@ const testData =
       path.dirname(require.resolve(
         "@xml-conformance-suite/test-data/package.json"));
 
+// Work around the lack of matchAll on old Node version.
+function matchAll(resolved, pattern) {
+  if (resolved.matchAll) {
+    return Array.from(resolved.matchAll(pattern));
+  }
+
+  const l = [];
+  let match;
+  // eslint-disable-next-line no-cond-assign
+  while ((match = pattern.exec(resolved)) !== null) {
+    l.push(match);
+  }
+
+  return l;
+}
+
 const systemJSConfig = {
   baseURL: "/base",
   pluginFirst: true,
@@ -32,7 +48,7 @@ const testDeps = ["sax", "saxes", "xmlchars", "minimist"];
 
 for (const dep of testDeps) {
   const resolved = require.resolve(dep);
-  const matches = Array.from(resolved.matchAll(/node_modules\//g));
+  const matches = matchAll(resolved, /node_modules\//g);
   const last = matches[matches.length - 1];
   const prefix = resolved.substring(0, last.index + last[0].length);
   let deps = prefixToDeps[prefix];
