@@ -8,7 +8,7 @@ const testData =
       path.dirname(require.resolve(
         "@xml-conformance-suite/test-data/package.json"));
 
-// Work around the lack of matchAll on old Node version.
+// Work around the lack of matchAll on old Node versions.
 function matchAll(resolved, pattern) {
   if (resolved.matchAll) {
     return Array.from(resolved.matchAll(pattern));
