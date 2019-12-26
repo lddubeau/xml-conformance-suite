@@ -79,9 +79,6 @@ export async function handleSuite(
   function handleTest({ handling, test }: TestInfo): void {
     const id = test.mustGetAttribute("ID");
 
-    // 1660 passing (25s)
-    // 84 failing
-
     switch (handling) {
     case "skip":
       break;

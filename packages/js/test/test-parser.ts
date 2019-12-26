@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
 import { ResourceLoader } from "../build/dist/lib/resource-loader";
-import { Element, loadTests, Test } from "../build/dist/lib/test-parser";
+import { Element, loadTests, Suite, Test } from "../build/dist/lib/test-parser";
 
 describe("test-parser", () => {
   describe("Element", () => {
@@ -38,7 +38,7 @@ describe("test-parser", () => {
     describe("#appendChild", () => {
       it("appends a child", () => {
         const parent = new Element("myName", {}, "base");
-        const child = new Element("foo", {}, "base");
+        const child = new Test("TEST", {}, "base", {} as ResourceLoader);
         parent.appendChild(child);
         expect(parent).to.have.property("children").deep.equal([child]);
       });
@@ -72,7 +72,8 @@ describe("test-parser", () => {
         it("without an xml:base, returns the parent's base", () => {
           const withBase = new Element("foo", { "xml:base": "sub" },
                                        "myDocumentBase");
-          const child = new Element("bar", {}, "myDocumentBase");
+          const child = new Test("TEST", {}, "myDocumentBase",
+                                 {} as ResourceLoader);
           withBase.appendChild(child);
           expect(child).to.have.property("base").equal("myDocumentBase/sub");
         });
@@ -80,8 +81,8 @@ describe("test-parser", () => {
         it("with an xml:base, joins xml:base with the parent's base", () => {
           const withBase = new Element("foo", { "xml:base": "sub" },
                                        "myDocumentBase");
-          const child = new Element("bar", { "xml:base": "sub2" },
-                                    "myDocumentBase");
+          const child = new Test("TEST", { "xml:base": "sub2" },
+                                 "myDocumentBase", {} as ResourceLoader);
           withBase.appendChild(child);
           expect(child).to.have.property("base")
             .equal("myDocumentBase/sub/sub2");
@@ -104,18 +105,20 @@ describe("test-parser", () => {
 
       it("walks child elements", () => {
         const parent = new Element("foo", {}, "myDocumentBase");
-        const child = new Element("child", {}, "myDocumentBase");
+        const child = new Suite("TESTSUITE", {}, "myDocumentBase");
         parent.appendChild(child);
-        const grandchild = new Element("grandchild", {}, "myDocumentBase");
+        const grandchild = new Test("TEST", {}, "myDocumentBase",
+                                    {} as ResourceLoader);
         child.appendChild(grandchild);
-        parent.appendChild(new Element("nextchild", {}, "myDocumentBase"));
-        const names: string[] = [];
+        const nextchild = new Test("TEST", {}, "myDocumentBase",
+                                   {} as ResourceLoader);
+        parent.appendChild(nextchild);
+        const els: Element[] = [];
         parent.walkChildElements(walking => {
-          expect(walking).to.be.instanceOf(Element);
-          names.push(walking.name);
+          els.push(walking);
         });
 
-        expect(names).to.deep.equal(["child", "grandchild", "nextchild"]);
+        expect(els).to.deep.equal([child, grandchild, nextchild]);
       });
     });
   });
