@@ -11,9 +11,9 @@ const testData =
         "@xml-conformance-suite/test-data/package.json"));
 
 import { ResourceLoader } from "../lib/resource-loader";
-import { Element, isTest, Test, TestParser } from "../lib/test-parser";
+import { isTest, Suite, Test, TestParser } from "../lib/test-parser";
 
-function loadTests(resourceLoader: ResourceLoader): Element {
+function loadTests(resourceLoader: ResourceLoader): Suite {
   const testParser = new TestParser(path.join(testData, "xmlconf"),
                                     resourceLoader);
   testParser.parse(fs.readFileSync(path.join(testData,
@@ -24,7 +24,7 @@ function loadTests(resourceLoader: ResourceLoader): Element {
     throw new Error("the top level element must be TESTSUITE");
   }
 
-  return top!;
+  return top as Suite;
 }
 
 const parser = new argparse.ArgumentParser({
@@ -166,6 +166,29 @@ function catCommand(subargs: Record<string, any>): void {
   }
 }
 
+function dumpStat(stat: Map<unknown, unknown>): void {
+  for (const [version, sum] of stat.entries()) {
+    console.log(version, sum);
+  }
+}
+
+function valuesCommand(subargs: Record<string, any>): void {
+  checkUnrecognized(subargs.__extra);
+  const suite = loadTests(new ResourceLoader());
+
+  const { name, attribute } = subargs;
+  if (attribute) {
+    dumpStat(suite.getXMLAttributeStats(name));
+  }
+  else {
+    if (!["version", "recommendation", "editions", "sections",
+          "testType", "entities"].includes(name)) {
+      throw new Error(`unsupported name: ${name}`);
+    }
+    dumpStat(suite.getPropertyStats(name));
+  }
+}
+
 const subparsers = parser.addSubparsers({
   title: "subcommands",
   dest: "subcommand",
@@ -224,6 +247,24 @@ cat.addArgument(["-a", "--aspect"], {
   defaultValue: "definition",
   help: "Select which aspect of the test to dump. ``definition`` selects the \
 test definition. ``file`` selects the test file.",
+});
+
+const values = subparsers.addParser("values", {
+  description: "Dump the set of possible values for some properties of tests.",
+  help: "Dump the set of possible values for some properties of tests.",
+});
+
+values.setDefaults({ func: valuesCommand });
+
+values.addArgument("name", {
+  action: "store",
+  help: "The name of the property to get.",
+});
+
+values.addArgument(["-a", "--attribute"], {
+  action: "storeTrue",
+  defaultValue: false,
+  help: "Whether to get the raw attribute value prior to any processing.",
 });
 
 // Patch argparse so that parseKnownArgs works with subparsers.

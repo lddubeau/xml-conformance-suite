@@ -20,7 +20,7 @@ export class Element {
   /**
    * The children of this element.
    */
-  readonly children: Element[] = [];
+  readonly children: (Test | Suite)[] = [];
 
   /**
    * The parent of this element. You should not modify this parameter directly.
@@ -46,7 +46,7 @@ export class Element {
   /**
    * @param child The child to append.
    */
-  appendChild(child: Element): void {
+  appendChild(child: Test | Suite): void {
     this.children.push(child);
     child.parent = this;
   }
@@ -104,10 +104,8 @@ export class Element {
    */
   walkChildElements(fn: (child: Element) => void): void {
     for (const child of this.children) {
-      if (child instanceof Element) {
-        fn(child);
-        child.walkChildElements(fn);
-      }
+      fn(child);
+      child.walkChildElements(fn);
     }
   }
 }
@@ -197,7 +195,10 @@ export class Test extends Element {
     return this.attributes.RECOMMENDATION || "XML1.0";
   }
 
-  /** An array of editions to which this test applies. */
+  /**
+   * An array of editions to which this test applies. An undefined value means
+   * "all editions".
+   */
   get editions(): string[] | undefined {
     const edition = this.attributes.EDITION;
     return edition !== undefined ? edition.split(/\s+/) : undefined;
@@ -372,6 +373,59 @@ export class Test extends Element {
   }
 }
 
+function makeStats<V>(values: V[]): Map<V, number> {
+  const stats: Map<V, number> = new Map();
+  for (const version of values) {
+    let num = stats.get(version);
+    if (num === undefined) {
+      num = 0;
+    }
+    stats.set(version, num + 1);
+  }
+
+  return stats;
+}
+
+export type QueryableProperties = "version" | "recommendation" | "editions" |
+  "sections" | "entities" | "testType";
+
+export class Suite extends Element {
+  getXMLAttributeStats(name: string): Map<string | undefined, number> {
+    return makeStats(this.getXMLAttributeValues(name));
+  }
+
+  getXMLAttributeValues(name: string): (string | undefined) [] {
+    const up = name.toUpperCase();
+    const ret: (string | undefined)[] = [];
+    this.walkChildElements(child => {
+      if (child instanceof Test) {
+        ret.push(child.attributes[up]);
+      }
+    });
+    return ret;
+  }
+
+  getPropertyStats(name: QueryableProperties): Map<string | undefined, number> {
+    return makeStats(this.getPropertyValues(name));
+  }
+
+  getPropertyValues(name: QueryableProperties): (string | undefined) [] {
+    const ret: (string | undefined)[] = [];
+    this.walkChildElements(child => {
+      if (child instanceof Test) {
+        const value = child[name];
+        if (Array.isArray(value)) {
+          ret.push(...value);
+        }
+        else {
+          ret.push(value);
+        }
+      }
+    });
+    return ret;
+  }
+}
+
 /**
  * A parser tailored for parsing the W3C suite.
  */
@@ -379,6 +433,7 @@ export class TestParser {
   /** The top element. This gets a value after ``parse`` returns. */
   top: Element | undefined;
   private readonly stack: Element[] = [];
+  private skip: number = 0;
 
   private readonly parser: SaxesParser;
 
@@ -396,18 +451,35 @@ export class TestParser {
     const parser = this.parser = new SaxesParser({ position: false });
 
     parser.onopentag = elementData => {
+      if (this.skip > 0) {
+        this.skip++;
+        return;
+      }
+
       const { name } = elementData;
       let el;
       switch (name) {
-      case "TEST":
+        case "TEST":
           el = new Test(name, elementData.attributes as Record<string, string>,
                         this.documentBase,
                         this.resourceLoader);
           break;
-      default:
+          // As far as we are concerned TESTSUITE is just a top-level TESTCASES.
+        case "TESTCASES":
+        case "TESTSUITE":
           el =
-            new Element(name, elementData.attributes as Record<string, string>,
-                        this.documentBase);
+            new Suite(name, elementData.attributes as Record<string, string>,
+                      this.documentBase);
+          break;
+        case "B":
+        case "EM":
+          // B and EM can appear as children of TEST for marking up the text in
+          // TEST. Since we do not use th text in TEST, we don't use these
+          // either.
+          this.skip++;
+          return;
+        default:
+          throw new Error(`unexpected element ${name}`);
       }
 
       const topEl = this.stack[0];
@@ -423,6 +495,11 @@ export class TestParser {
     };
 
     parser.onclosetag = () => {
+      if (this.skip > 0) {
+        this.skip--;
+        return;
+      }
+
       if (this.stack.length === 0) {
         throw new Error("stack underflow");
       }
