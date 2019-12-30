@@ -4,7 +4,7 @@ import { makeTestHandlingByTypeTest } from "./common-tests";
 
 import { Driver } from "../../build/dist/drivers/base";
 import { BAD_TESTS } from "../../build/dist/lib/test-errata";
-import { Test } from "../../build/dist/lib/test-parser";
+import { Test } from "../../build/dist/lib/test-suite";
 import { BaseSelection, Selection,
          TestHandling } from "../../build/dist/selections/base";
 

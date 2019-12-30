@@ -1,6 +1,6 @@
 import { Driver, DriverCtor } from "../../../drivers/base";
 import { ResourceLoader } from "../../../lib/resource-loader";
-import { Element, Test } from "../../../lib/test-parser";
+import { Suite, Test } from "../../../lib/test-suite";
 import { Selection, SelectionCtor,
          TestHandling } from "../../../selections/base";
 import { mochaTestToTest } from "../support/test-registry";
@@ -11,36 +11,23 @@ type SuiteInfo = { title: string, children: (SuiteInfo|TestInfo)[] };
 /**
  * A mocha builder that builds the tests synchronously.
  */
-function convertSuite(suite: Element,
+function convertSuite(suite: Suite,
                       // @ts-ignore
                       resourceLoader: ResourceLoader,
                       // @ts-ignore
                       driver: Driver,
                       selection: Selection): Promise<(SuiteInfo | TestInfo)[]> {
   async function handleTest(test: Test): Promise<TestInfo> {
-    if (test.name !== "TEST") {
-      throw new Error("expected a TEST element");
-    }
-
     const handling = await selection.getTestHandling(test);
     return { handling, test };
   }
 
-  async function handleTestCases(testCases: Element):
+  async function handleTestCases(testCases: Suite):
   Promise<SuiteInfo | TestInfo> {
-    if (testCases.name !== "TESTCASES") {
-      throw new Error("expected a TESTCASES element");
-    }
-
-    let title = testCases.attributes.PROFILE;
-    if (!title) {
-      title = testCases.attributes["xml:base"];
-    }
-
     const children = await Promise.all(testCases.children.map(child => {
       switch (child.name) {
         case "TESTCASES":
-          return handleTestCases(child);
+          return handleTestCases(child as Suite);
         case "TEST":
           return handleTest(child as Test);
         default:
@@ -48,10 +35,12 @@ function convertSuite(suite: Element,
       }
     }));
 
-    return { title, children };
+    return { title: testCases.attributes.PROFILE ??
+             testCases.attributes["xml:base"],
+             children };
   }
 
-  return Promise.all((suite.children as Element[]).map(handleTestCases));
+  return Promise.all((suite.children as Suite[]).map(handleTestCases));
 }
 
 /**
@@ -68,7 +57,7 @@ function convertSuite(suite: Element,
  * @param Selection The selection that determines how tests are handled.
  */
 export async function handleSuite(
-  suite: Element, name: string,
+  suite: Suite, name: string,
   resourceLoader: ResourceLoader,
   // tslint:disable-next-line:variable-name no-shadowed-variable
   Driver: DriverCtor,

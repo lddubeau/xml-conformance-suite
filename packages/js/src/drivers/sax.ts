@@ -5,7 +5,7 @@
 import sax from "sax";
 
 import { ResourceLoader } from "../lib/resource-loader";
-import { Test } from "../lib/test-parser";
+import { Test } from "../lib/test-suite";
 import { TestHandling } from "../selections/base";
 import { BaseDriver } from "./base";
 

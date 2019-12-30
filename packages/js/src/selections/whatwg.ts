@@ -9,7 +9,7 @@
  * whatwg does not require browsers to provide validation facilities so this
  * selector excludes all validation tests.
  */
-import { Test } from "../lib/test-parser";
+import { Test } from "../lib/test-suite";
 import { BaseSelection, TestHandling } from "./base";
 
 export class Selection extends BaseSelection {

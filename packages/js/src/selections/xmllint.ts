@@ -39,7 +39,7 @@
  *
  * @copyright The contibutors of xml-conformance-suite.
  */
-import { Test } from "../lib/test-parser";
+import { Test } from "../lib/test-suite";
 import { BaseSelection, TestHandling } from "./base";
 
 // xmllint does not seem to enforce the validation constraints that

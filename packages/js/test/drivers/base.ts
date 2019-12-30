@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
 import { BaseDriver } from "../../build/dist/drivers/base";
-import { Test } from "../../build/dist/lib/test-parser";
+import { Test } from "../../build/dist/lib/test-suite";
 import { TestHandling } from "../../build/dist/selections/base";
 
 // tslint:disable-next-line:class-name

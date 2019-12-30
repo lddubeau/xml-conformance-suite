@@ -5,7 +5,7 @@
  */
 
 import { ResourceLoader } from "../lib/resource-loader";
-import { Test } from "../lib/test-parser";
+import { Test } from "../lib/test-suite";
 import { TestHandling } from "../selections/base";
 
 export type DriverCtor = new (resourceLoader: ResourceLoader) => Driver;

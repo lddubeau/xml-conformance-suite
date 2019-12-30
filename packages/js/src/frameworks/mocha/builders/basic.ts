@@ -3,7 +3,7 @@
  */
 import { DriverCtor } from "../../../drivers/base";
 import { ResourceLoader } from "../../../lib/resource-loader";
-import { Element } from "../../../lib/test-parser";
+import { Suite } from "../../../lib/test-suite";
 import { SelectionCtor } from "../../../selections/base";
 import { handleSuite } from "./common";
 
@@ -19,7 +19,7 @@ import { handleSuite } from "./common";
  *
  * @param Selection The selection that determines how tests are handled.
  */
-export function build(suite: Element, name: string,
+export function build(suite: Suite, name: string,
                       resourceLoader: ResourceLoader,
                       // tslint:disable-next-line:variable-name
                       Driver: DriverCtor,

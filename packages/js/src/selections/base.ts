@@ -3,7 +3,7 @@
  */
 import { Driver } from "../drivers/base";
 import { BAD_TESTS } from "../lib/test-errata";
-import { Test } from "../lib/test-parser";
+import { Test } from "../lib/test-suite";
 
 export type TestHandling = "fails" | "succeeds" | "skip";
 
