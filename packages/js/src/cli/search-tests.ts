@@ -182,7 +182,7 @@ function valuesCommand(subargs: Record<string, any>): void {
   }
   else {
     if (!["version", "recommendation", "editions", "sections",
-          "testType", "entities"].includes(name)) {
+          "productions", "testType", "entities"].includes(name)) {
       throw new Error(`unsupported name: ${name}`);
     }
     dumpStat(suite.getPropertyStats(name));

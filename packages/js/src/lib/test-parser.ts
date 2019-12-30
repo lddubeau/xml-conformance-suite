@@ -11,6 +11,7 @@ import { SaxesParser } from "saxes";
 
 import { ResourceLoader } from "./resource-loader";
 import { makeFrequencyMap } from "./stats";
+import { ERRORS } from "./test-errata";
 
 /**
  * An XML element.
@@ -123,7 +124,13 @@ export interface SerializedTest {
   recommendation: string;
   editions: string[] | undefined;
   sections: string[];
+  productions: string[];
   entities: string;
+}
+
+interface ParsedSections {
+  sections: string[];
+  productions: string[];
 }
 
 /**
@@ -135,6 +142,9 @@ export class Test extends Element {
   private _hasDTD: Promise<boolean> | undefined;
 
   private _hasBOM: Promise<boolean> | undefined;
+
+  private _parsedSections: ParsedSections | undefined;
+
   /**
    * @param name The name of the element.
    *
@@ -152,6 +162,14 @@ export class Test extends Element {
     super(name, attributes, documentBase);
     if (name !== "TEST") {
       throw new Error("the element name must be TEST");
+    }
+
+    // There are some errors in the XML files. Apply ERRATA to fix them.
+    const errata = ERRORS[this.id];
+    if (errata !== undefined) {
+      for (const attrName of Object.keys(errata)) {
+        this.attributes[attrName] = errata[attrName];
+      }
     }
   }
 
@@ -216,24 +234,90 @@ export class Test extends Element {
     return edition !== undefined ? edition.split(/\s+/) : undefined;
   }
 
+  private get parsedSections(): ParsedSections {
+    if (this._parsedSections === undefined) {
+      // All the code we have here is necessary because the source is not
+      // consistent in how it records the sections and production numbers.
+      //
+      // E.g. a combination of productions 1 2 3 can be recorded as:
+      //
+      // "[1] [2] [3]"
+      // "[1][2][3]"
+      // "[1,2,3]"
+      // "[1, 2, 3]"
+      const parts = this.mustGetAttribute("SECTIONS").trim().split(/([[\]])/);
+      let inProd = false;
+      const sections: string[] = [];
+      const productions: string[] = [];
+      for (const part of parts) {
+        switch (part) {
+          case "":
+            break;
+          case "[":
+            if (inProd) {
+              throw new Error("nested production");
+            }
+            inProd = true;
+            break;
+          case "]":
+            if (!inProd) {
+              throw new Error("extraneous bracket");
+            }
+            inProd = false;
+            break;
+          default:
+            if (inProd) {
+              productions.push(...part.trim().split(/,\s*|\s+/)
+                               .filter(x => x !== "").map(x => `[${x}]`));
+            }
+            else {
+              sections.push(...part.trim().split(/,\s*|\s+/)
+                            .filter(x => x !== ""));
+            }
+        }
+      }
+
+      this._parsedSections = { sections, productions };
+    }
+
+    return this._parsedSections;
+  }
+
   /**
    * An array of sections to which this test applies.
    *
-   * The W3C test suite records two types of values under the name "section":
+   * The W3C test suite records two types of values under the attribute
+   * "SECTIONS":
    *
    * - section numbers proper: "2.1", "4.3.2", etc. These correspond to the
    *   headings in the specification.
    *
-   * - grammar rule numbers: "[12]", "[53]", etc. These are always in
+   * - grammar production numbers: "[12]", "[53]", etc. These are always in
    *   brackets. They correspond to the grammar rules in the specification.
    *
-   * This field is an array that contains both types of values described
-   * above. Brackets are preserved to distinguish the latter type from the
-   * former.
+   * This field is an array that contains only section numbers proper.
    */
   get sections(): string[] {
-    const sections =  this.mustGetAttribute("SECTIONS");
-    return sections.split(/\s+/);
+    return this.parsedSections.sections;
+  }
+
+  /**
+   * An array of productions to which this test applies.
+   *
+   * The W3C test suite records two types of values under the attribute
+   * "SECTIONS":
+   *
+   * - section numbers proper: "2.1", "4.3.2", etc. These correspond to the
+   *   headings in the specification.
+   *
+   * - grammar production numbers: "[12]", "[53]", etc. These are always in
+   *   brackets. They correspond to the grammar rules in the specification.
+   *
+   * This field is an array that contains only the production numbers, including
+   * the brackets.
+   */
+  get productions(): string[] {
+    return this.parsedSections.productions;
   }
 
   /**
@@ -375,13 +459,21 @@ export class Test extends Element {
    */
   includesSections(desiredSections: string[]): boolean {
     const { sections } = this;
-    for (const section of desiredSections) {
-      if (sections.includes(section)) {
-        return true;
-      }
-    }
+    return desiredSections.some(section => sections.includes(section));
+  }
 
-    return false;
+  /**
+   * @param desiredProductions The productions of the XML specification to test.
+   * Note that this function expects square brackets around the production
+   * numbers.
+   *
+   * @returns ``true`` if any value in ``desiredProductions`` is included by
+   * this test, ``false`` otherwise.
+   */
+  includesProductions(desiredProductions: string[]): boolean {
+    const { productions } = this;
+    return desiredProductions
+      .some(production => productions.includes(production));
   }
 
   /** A serialized representation of the test. */
@@ -394,6 +486,7 @@ export class Test extends Element {
       recommendation: this.recommendation,
       editions: this.editions,
       sections: this.sections,
+      productions: this.productions,
       entities: this.entities,
     };
   }

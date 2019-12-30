@@ -31,6 +31,9 @@ export function makeTests(): void {
           includesSections(): boolean {
             return false;
           },
+          includesProductions(): boolean {
+            return false;
+          },
         } as unknown as Test)).to.be.false;
     });
 
@@ -43,6 +46,9 @@ export function makeTests(): void {
           return true;
         },
         includesSections(): boolean {
+          return false;
+        },
+        includesProductions(): boolean {
           return false;
         },
       } as unknown as Test)).to.be.true;
@@ -59,7 +65,27 @@ export function makeTests(): void {
         includesSections(): boolean {
           return true;
         },
+        includesProductions(): boolean {
+          return false;
+        },
       } as unknown as Test)).to.be.true;
+    });
+
+    it("resolves on correct production", async () => {
+        expect(await selection.shouldSkipTest({
+          includesVersion(): boolean {
+            return false;
+          },
+          includesEdition(): boolean {
+            return false;
+          },
+          includesSections(): boolean {
+            return false;
+          },
+          includesProductions(): boolean {
+            return true;
+          },
+        } as unknown as Test)).to.be.true;
     });
   });
 }

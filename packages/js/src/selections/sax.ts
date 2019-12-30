@@ -6,9 +6,12 @@
 import { Test } from "../lib/test-parser";
 import { BaseSelection, TestHandling } from "./base";
 
-const EXCLUDED_SECTIONS = [
-  // Sections having to do with DTD parsing.
+const EXCLUDED_PRODUCTIONS = [
+  // Productions having to do with DTD parsing.
   "[28]", "[29]", "[30]", "[31]",
+];
+
+const EXCLUDED_SECTIONS = [
   // Entities.
   "4.2",
   // Internal entities.
@@ -39,6 +42,7 @@ export class Selection extends BaseSelection {
 
   async shouldSkipTest(test: Test): Promise<boolean> {
     return (test.includesVersion("1.0") && test.includesEdition("5")) ||
-      test.includesSections(EXCLUDED_SECTIONS);
+      test.includesSections(EXCLUDED_SECTIONS) ||
+      test.includesProductions(EXCLUDED_PRODUCTIONS);
   }
 }
