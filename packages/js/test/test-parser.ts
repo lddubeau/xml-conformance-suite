@@ -3,6 +3,12 @@ import { expect } from "chai";
 import { ResourceLoader } from "../build/dist/lib/resource-loader";
 import { Element, loadTests, Suite, Test } from "../build/dist/lib/test-parser";
 
+function makeTest(attributes: Record<string, string> = Object.create(null)):
+Test {
+  return new Test("TEST", { ID: "foo", ...attributes }, "base",
+                  {} as ResourceLoader);
+}
+
 describe("test-parser", () => {
   describe("Element", () => {
     let el: Element;
@@ -38,7 +44,7 @@ describe("test-parser", () => {
     describe("#appendChild", () => {
       it("appends a child", () => {
         const parent = new Element("myName", {}, "base");
-        const child = new Test("TEST", {}, "base", {} as ResourceLoader);
+        const child = makeTest();
         parent.appendChild(child);
         expect(parent).to.have.property("children").deep.equal([child]);
       });
@@ -72,7 +78,7 @@ describe("test-parser", () => {
         it("without an xml:base, returns the parent's base", () => {
           const withBase = new Element("foo", { "xml:base": "sub" },
                                        "myDocumentBase");
-          const child = new Test("TEST", {}, "myDocumentBase",
+          const child = new Test("TEST", { ID: "foo" }, "myDocumentBase",
                                  {} as ResourceLoader);
           withBase.appendChild(child);
           expect(child).to.have.property("base").equal("myDocumentBase/sub");
@@ -81,7 +87,7 @@ describe("test-parser", () => {
         it("with an xml:base, joins xml:base with the parent's base", () => {
           const withBase = new Element("foo", { "xml:base": "sub" },
                                        "myDocumentBase");
-          const child = new Test("TEST", { "xml:base": "sub2" },
+          const child = new Test("TEST", { ID: "foo", "xml:base": "sub2" },
                                  "myDocumentBase", {} as ResourceLoader);
           withBase.appendChild(child);
           expect(child).to.have.property("base")
@@ -107,11 +113,9 @@ describe("test-parser", () => {
         const parent = new Element("foo", {}, "myDocumentBase");
         const child = new Suite("TESTSUITE", {}, "myDocumentBase");
         parent.appendChild(child);
-        const grandchild = new Test("TEST", {}, "myDocumentBase",
-                                    {} as ResourceLoader);
+        const grandchild = makeTest();
         child.appendChild(grandchild);
-        const nextchild = new Test("TEST", {}, "myDocumentBase",
-                                   {} as ResourceLoader);
+        const nextchild = makeTest();
         parent.appendChild(nextchild);
         const els: Element[] = [];
         parent.walkChildElements(walking => {
@@ -142,7 +146,7 @@ describe("test-parser", () => {
         "VERSION": "versionVal",
         "RECOMMENDATION": "recommendationVal",
         "EDITION": "a b c",
-        "SECTIONS": "sa sb sc",
+        "SECTIONS": "sa sb sc [pa]",
         "ENTITIES": "both",
         "URI": "a/b.xml",
         "xml:base": "base/",
@@ -171,8 +175,8 @@ describe("test-parser", () => {
       });
 
       it("throws if there is no TYPE", () => {
-        expect(() => new Test("TEST", {}, "myDocumentBase", fakeLoader)
-               .testType).to.throw(Error, "attribute TYPE is not set");
+        expect(() => makeTest().testType)
+          .to.throw(Error, "attribute TYPE is not set");
       });
     });
 
@@ -182,15 +186,14 @@ describe("test-parser", () => {
       });
 
       it("has the value ``undefined`` if there is no VERSION", () => {
-        expect(new Test("TEST", {}, "myDocumentBase", fakeLoader))
+        expect(makeTest())
           .to.have.property("version").undefined;
       });
 
       it("has the value ``1.0`` if there is no VERSION but EDITION is set",
          () => {
-           expect(new Test("TEST", { EDITION: "1" }, "myDocumentBase",
-                           fakeLoader))
-             .to.have.property("version").equal("1.0");
+           expect(makeTest({  EDITION: "1" })).to.have.property("version")
+             .equal("1.0");
          });
     });
 
@@ -201,8 +204,7 @@ describe("test-parser", () => {
       });
 
       it("has the value \"XML1.0\" if there is no RECOMMENDATION", () => {
-        expect(new Test("TEST", {}, "myDocumentBase", fakeLoader))
-          .to.have.property("recommendation").equal("XML1.0");
+        expect(makeTest()).to.have.property("recommendation").equal("XML1.0");
       });
     });
 
@@ -212,14 +214,45 @@ describe("test-parser", () => {
       });
 
       it("is ``undefined`` if there is no EDITION", () => {
-        expect(new Test("TEST", {}, "myDocumentBase", fakeLoader))
-          .to.have.property("editions").undefined;
+        expect(makeTest()).to.have.property("editions").undefined;
       });
     });
 
     describe("#sections", () => {
-      it("has the value of the SECTIONS attribute, split into array", () => {
-        expect(el).to.have.property("sections").deep.equal(["sa", "sb", "sc"]);
+      it("has the sections of the SECTIONS attribute, split into array", () => {
+        expect(makeTest({ "SECTIONS":
+                          "a,b,,  , [,c,d] [e, f , g] [h][i][j k l] m  n" }))
+          .to.have.property("sections").deep.equal(["a", "b", "m", "n"]);
+      });
+
+      it("throws if there is a nested open bracket", () => {
+        expect(() => makeTest({ "SECTIONS": "[][[a" }).sections).to
+          .throw(Error, "nested production");
+      });
+
+      it("throws if there is a spurious close bracket", () => {
+        expect(() => makeTest({ "SECTIONS": "[a]]" }).sections).to
+          .throw(Error, "extraneous bracket");
+      });
+    });
+
+    describe("#productions", () => {
+      it("has the productions of the SECTIONS attribute, split into array", () => {
+        expect(makeTest({ "SECTIONS":
+                          "a,b,,  , [,c,d] [e, f , g] [h][i][j k l] m  n" }))
+          .to.have.property("productions").deep
+          .equal(["[c]", "[d]", "[e]", "[f]", "[g]", "[h]", "[i]", "[j]",
+                  "[k]", "[l]"]);
+      });
+
+      it("throws if there is a nested open bracket", () => {
+        expect(() => makeTest({ "SECTIONS": "[][[a" }).productions).to
+          .throw(Error, "nested production");
+      });
+
+      it("throws if there is a spurious close bracket", () => {
+        expect(() => makeTest({ "SECTIONS": "[a]]" }).productions).to
+          .throw(Error, "extraneous bracket");
       });
     });
 
@@ -229,7 +262,7 @@ describe("test-parser", () => {
       });
 
       it("is ``\"none\"`` if there is no ENTITIES", () => {
-        expect(new Test("TEST", {}, "myDocumentBase", fakeLoader))
+        expect(makeTest())
           .to.have.property("entities").equal("none");
       });
     });
@@ -241,7 +274,7 @@ describe("test-parser", () => {
       });
 
       it("throws if there is no URI", () => {
-        expect(() => new Test("TEST", {}, "myDocumentBase", fakeLoader)
+        expect(() => makeTest()
                .resolvedURI).to.throw(Error, "attribute URI is not set");
       });
     });
@@ -252,9 +285,8 @@ describe("test-parser", () => {
       });
 
       it("is true when testType is \"invalid\"", () => {
-        expect(new Test("TEST", { TYPE: "invalid" }, "myDocumentBase",
-                        fakeLoader))
-          .to.have.property("skipForNonValidatingParser").true;
+        expect(makeTest({ TYPE: "invalid" })).to.have
+          .property("skipForNonValidatingParser").true;
       });
     });
 
@@ -279,6 +311,7 @@ describe("test-parser", () => {
 
       it("resolves to ``true`` if there is a DTD", async () => {
         expect(await new Test("TEST", {
+          ID: "foo",
           URI: "hasDTD.xml",
         }, "myDocumentBase", fakeLoader).getHasDTD()).to.be.true;
       });
@@ -295,6 +328,7 @@ describe("test-parser", () => {
 
       it("resolves to ``true`` if there is a BOM", async () => {
         expect(await new Test("TEST", {
+          ID: "foo",
           URI: "hasDTD.xml",
         }, "myDocumentBase", fakeLoader).getHasBOM()).to.be.true;
       });
@@ -320,8 +354,7 @@ describe("test-parser", () => {
       });
 
       it("returns true if no version is set", () => {
-        expect(new Test("TEST", {}, "myDocumentBase", fakeLoader)
-               .includesVersion("fnord")).to.be.true;
+        expect(makeTest().includesVersion("fnord")).to.be.true;
       });
     });
 
@@ -335,8 +368,7 @@ describe("test-parser", () => {
       });
 
       it("returns true if no edition is set", () => {
-        expect(new Test("TEST", {}, "myDocumentBase", fakeLoader)
-               .includesVersion("fnord")).to.be.true;
+        expect(makeTest().includesVersion("fnord")).to.be.true;
       });
     });
 
@@ -350,6 +382,16 @@ describe("test-parser", () => {
       });
     });
 
+    describe("#includesProductions", () => {
+      it("returns false if no production matches", () => {
+        expect(el.includesProductions(["FNORD", "FNORD2"])).to.be.false;
+      });
+
+      it("returns true if a productions matches", () => {
+        expect(el.includesProductions(["FNORD", "FNORD2", "[pa]"])).to.be.true;
+      });
+    });
+
     describe("#serializedRepresentation", () => {
       it("returns the right data", () => {
         expect(el.serializedRepresentation).to.deep.equal({
@@ -360,6 +402,7 @@ describe("test-parser", () => {
           recommendation: "recommendationVal",
           editions: ["a", "b", "c"],
           sections: ["sa", "sb", "sc"],
+          productions: ["[pa]"],
           entities: "both",
         });
       });
@@ -367,21 +410,14 @@ describe("test-parser", () => {
   });
 
   describe("Suite", () => {
-    let fakeLoader: ResourceLoader;
     let empty: Suite;
     let el: Suite;
 
     before(() => {
-      fakeLoader = {
-        loadFile(_path: string): Promise<string> {
-          return Promise.reject(new Error("Q"));
-        },
-      };
-
       empty = new Suite("TESTSUITE", {}, "myDocumentBase");
       el = new Suite("TESTSUITE", {}, "myDocumentBase");
 
-      el.appendChild(new Test("TEST", {
+      el.appendChild(makeTest({
         "ID": "moo",
         "TYPE": "typeVal",
         "VERSION": "versionVal",
@@ -391,9 +427,9 @@ describe("test-parser", () => {
         "ENTITIES": "both",
         "URI": "a/b.xml",
         "xml:base": "base/",
-      }, "myDocumentBase", fakeLoader));
+      }));
 
-      el.appendChild(new Test("TEST", {
+      el.appendChild(makeTest({
         "ID": "moo2",
         "TYPE": "typeVal",
         "VERSION": "versionVal2",
@@ -403,11 +439,11 @@ describe("test-parser", () => {
         "ENTITIES": "both",
         "URI": "a/b.xml",
         "xml:base": "base/",
-      }, "myDocumentBase", fakeLoader));
+      }));
 
       const subSuite = new Suite("TESTSUITE", {}, "myDocumentBase");
       el.appendChild(subSuite);
-      subSuite.appendChild(new Test("TEST", {
+      subSuite.appendChild(makeTest({
         "ID": "moo3",
         "TYPE": "typeVal",
         "VERSION": "versionVal",
@@ -417,7 +453,7 @@ describe("test-parser", () => {
         "ENTITIES": "both",
         "URI": "a/b.xml",
         "xml:base": "base/",
-      }, "myDocumentBase", fakeLoader));
+      }));
     });
 
     describe("#getXMLAttributeValues", () => {

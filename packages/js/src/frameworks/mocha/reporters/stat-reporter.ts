@@ -3,14 +3,6 @@ import mocha from "mocha";
 import { SerializedTest } from "../../../lib/test-parser";
 import { mochaTestToTest } from "../support/test-registry";
 
-export interface SuiteStats {
-  overall: number;
-  version: Record<string, number>;
-  recommendation: Record<string, number>;
-  editions: Record<string, number>;
-  sections: Record<string, number>;
-}
-
 type Atom<X> = X extends readonly (infer E)[] ? E : X;
 
 function addAtom<T>(map: Map<T, number>, atom: T): void {
@@ -38,9 +30,15 @@ function addToFrequencyMap<T, K extends keyof T>(maps: FrequencyMaps<T, K>,
   }
 }
 
-const props = ["version", "recommendation", "editions", "sections"] as const;
+const props = ["version", "recommendation", "editions", "sections",
+               "productions"] as const;
+type Props = Atom<typeof props>;
 
-type TestFrequencyMaps = FrequencyMaps<SerializedTest, Atom<typeof props>>;
+type TestFrequencyMaps = FrequencyMaps<SerializedTest, Props>;
+
+export type SuiteStats = {
+  [k in Props]: Record<string, number>;
+} & { overall: number };
 
 export class StatReporter extends mocha.reporters.Base {
   private readonly totalFrequencies: TestFrequencyMaps;
@@ -54,6 +52,7 @@ export class StatReporter extends mocha.reporters.Base {
     recommendation: {},
     editions: {},
     sections: {},
+    productions: {},
   };
 
   constructor(runner: mocha.Runner) {
@@ -64,6 +63,7 @@ export class StatReporter extends mocha.reporters.Base {
       recommendation: new Map(),
       editions: new Map(),
       sections: new Map(),
+      productions: new Map(),
     };
 
     this.successfulFrequencies = {
@@ -71,6 +71,7 @@ export class StatReporter extends mocha.reporters.Base {
       recommendation: new Map(),
       editions: new Map(),
       sections: new Map(),
+      productions: new Map(),
     };
 
     runner.on("pass", test => {
