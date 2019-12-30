@@ -3,7 +3,7 @@
  * AT ANY POINT.
  */
 
-import { Test } from "../lib/test-parser";
+import { Test } from "../lib/test-suite";
 import { BaseSelection, TestHandling } from "./base";
 
 const EXCLUDED_PRODUCTIONS = [

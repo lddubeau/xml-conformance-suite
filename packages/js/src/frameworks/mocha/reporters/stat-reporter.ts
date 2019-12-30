@@ -1,6 +1,6 @@
 import mocha from "mocha";
 
-import { SerializedTest } from "../../../lib/test-parser";
+import { SerializedTest } from "../../../lib/test-suite";
 import { mochaTestToTest } from "../support/test-registry";
 
 type Atom<X> = X extends readonly (infer E)[] ? E : X;

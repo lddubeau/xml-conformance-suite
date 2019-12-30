@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
 import { Driver } from "../../build/dist/drivers/base";
-import { Test } from "../../build/dist/lib/test-parser";
+import { Test } from "../../build/dist/lib/test-suite";
 import { Selection } from "../../build/dist/selections/chrome";
 
 export function makeTests(): void {

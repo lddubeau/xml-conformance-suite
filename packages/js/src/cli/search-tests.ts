@@ -11,7 +11,8 @@ const testData =
         "@xml-conformance-suite/test-data/package.json"));
 
 import { ResourceLoader } from "../lib/resource-loader";
-import { isTest, Suite, Test, TestParser } from "../lib/test-parser";
+import { TestParser } from "../lib/test-parser";
+import { isTest, Suite, Test } from "../lib/test-suite";
 
 function loadTests(resourceLoader: ResourceLoader): Suite {
   const testParser = new TestParser(path.join(testData, "xmlconf"),
@@ -20,11 +21,7 @@ function loadTests(resourceLoader: ResourceLoader): Suite {
                                              "cleaned/xmlconf-flattened.xml"))
                    .toString());
   const { top } = testParser;
-  if (top!.name !== "TESTSUITE") {
-    throw new Error("the top level element must be TESTSUITE");
-  }
-
-  return top as Suite;
+  return top!;
 }
 
 const parser = new argparse.ArgumentParser({

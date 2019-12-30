@@ -4,7 +4,7 @@ import * as chai from "chai";
 import { expectRejection, use as erUse } from "expect-rejection";
 
 import { Driver } from "../../build/dist/drivers/base";
-import { Test } from "../../build/dist/lib/test-parser";
+import { Test } from "../../build/dist/lib/test-suite";
 
 erUse(chai);
 

@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import { Test } from "../../build/dist/lib/test-parser";
+import { Test } from "../../build/dist/lib/test-suite";
 import { Selection, TestHandling } from "../../build/dist/selections/base";
 
 export function makeTestHandlingByTypeTest(makeSelection: () => Selection,
