@@ -10,6 +10,7 @@ import path from "path";
 import { SaxesParser } from "saxes";
 
 import { ResourceLoader } from "./resource-loader";
+import { makeFrequencyMap } from "./stats";
 
 /**
  * An XML element.
@@ -112,6 +113,17 @@ export class Element {
 
 export function isTest(el: Element): el is Test {
   return el.name === "TEST";
+}
+
+export interface SerializedTest {
+  name: string;
+  id: string;
+  testType: string;
+  version: string | undefined;
+  recommendation: string;
+  editions: string[] | undefined;
+  sections: string[];
+  entities: string;
 }
 
 /**
@@ -371,30 +383,57 @@ export class Test extends Element {
 
     return false;
   }
-}
 
-function makeStats<V>(values: V[]): Map<V, number> {
-  const stats: Map<V, number> = new Map();
-  for (const version of values) {
-    let num = stats.get(version);
-    if (num === undefined) {
-      num = 0;
-    }
-    stats.set(version, num + 1);
+  /** A serialized representation of the test. */
+  get serializedRepresentation(): SerializedTest {
+    return {
+      name: this.name,
+      id: this.id,
+      testType: this.testType,
+      version: this.version,
+      recommendation: this.recommendation,
+      editions: this.editions,
+      sections: this.sections,
+      entities: this.entities,
+    };
   }
-
-  return stats;
 }
 
 export type QueryableProperties = "version" | "recommendation" | "editions" |
   "sections" | "entities" | "testType";
 
 export class Suite extends Element {
+  /**
+   * Produce a frequency map of the values taken by an attribute. These are the
+   * attributes as they appear in the XML files of the test suite.
+   *
+   * @param name The attribute to process. Since all the attributes in the suite
+   * are uppercase, the attribute name is automatically uppercased by this
+   * function. So searching for ``"version"`` is the same as searching for
+   * ``"VERSION"``.
+   *
+   * @returns The frequency map. The keys of the map are the attribute values
+   * encountered, and the values associated with a key is the frequency of that
+   * key. (The frequency is the number of times it was encountered in the test
+   * suite.)
+   */
   getXMLAttributeStats(name: string): Map<string | undefined, number> {
-    return makeStats(this.getXMLAttributeValues(name));
+    return makeFrequencyMap(this.getXMLAttributeValues(name));
   }
 
-  getXMLAttributeValues(name: string): (string | undefined) [] {
+  /**
+   * Report all the values taken by an attribute. These are the attributes as
+   * they appear in the XML files of the test suite.
+   *
+   * @param name The attribute to get. Since all the attributes in the suite are
+   * uppercase, the attribute name is automatically uppercased by this
+   * function. So searching for ``"version"`` is the same as searching for
+   * ``"VERSION"``.
+   *
+   * @returns An array of all the values encountered in the test
+   * suite. Duplicates **ARE NOT** removed.
+   */
+  getXMLAttributeValues(name: string): (string | undefined)[] {
     const up = name.toUpperCase();
     const ret: (string | undefined)[] = [];
     this.walkChildElements(child => {
@@ -405,10 +444,30 @@ export class Suite extends Element {
     return ret;
   }
 
+  /**
+   * Produce a frequency map of the values taken by a property of the JavaScript
+   * objects created from the XML files.
+   *
+   * @param name The property to process.
+   *
+   * @returns The frequency map. The keys of the map are the property values
+   * encountered, and the values associated with a key is the frequency of that
+   * key. (The frequency is the number of times it was encountered in the test
+   * suite.)
+   */
   getPropertyStats(name: QueryableProperties): Map<string | undefined, number> {
-    return makeStats(this.getPropertyValues(name));
+    return makeFrequencyMap(this.getPropertyValues(name));
   }
 
+  /**
+   * Report all the values taken by a property of the JavaScript objects created
+   * from the XML files.
+   *
+   * @param name The property to get.
+   *
+   * @returns An array of all the values encountered in the test
+   * suite. Duplicates **ARE NOT** removed.
+   */
   getPropertyValues(name: QueryableProperties): (string | undefined) [] {
     const ret: (string | undefined)[] = [];
     this.walkChildElements(child => {

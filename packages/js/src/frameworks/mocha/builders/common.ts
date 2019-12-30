@@ -3,6 +3,7 @@ import { ResourceLoader } from "../../../lib/resource-loader";
 import { Element, Test } from "../../../lib/test-parser";
 import { Selection, SelectionCtor,
          TestHandling } from "../../../selections/base";
+import { mochaTestToTest } from "../support/test-registry";
 
 type TestInfo = { handling: TestHandling, test: Test };
 type SuiteInfo = { title: string, children: (SuiteInfo|TestInfo)[] };
@@ -80,14 +81,15 @@ export async function handleSuite(
     const id = test.mustGetAttribute("ID");
 
     switch (handling) {
-    case "skip":
-      break;
-    case "succeeds":
-    case "fails":
-      it(id, () => driver.run(test, handling));
-      break;
-    default:
-      throw new Error(`unexpected handling type: ${handling}`);
+      case "skip":
+        break;
+      case "succeeds":
+      case "fails":
+        const mochaTest = it(id, () => driver.run(test, handling));
+        mochaTestToTest.set(mochaTest, test);
+        break;
+      default:
+        throw new Error(`unexpected handling type: ${handling}`);
     }
   }
 
