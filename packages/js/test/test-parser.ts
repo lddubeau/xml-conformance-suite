@@ -349,6 +349,141 @@ describe("test-parser", () => {
         expect(el.includesSections(["FNORD", "FNORD2", "sa"])).to.be.true;
       });
     });
+
+    describe("#serializedRepresentation", () => {
+      it("returns the right data", () => {
+        expect(el.serializedRepresentation).to.deep.equal({
+          name: "TEST",
+          id: "moo",
+          testType: "typeVal",
+          version: "versionVal",
+          recommendation: "recommendationVal",
+          editions: ["a", "b", "c"],
+          sections: ["sa", "sb", "sc"],
+          entities: "both",
+        });
+      });
+    });
+  });
+
+  describe("Suite", () => {
+    let fakeLoader: ResourceLoader;
+    let empty: Suite;
+    let el: Suite;
+
+    before(() => {
+      fakeLoader = {
+        loadFile(_path: string): Promise<string> {
+          return Promise.reject(new Error("Q"));
+        },
+      };
+
+      empty = new Suite("TESTSUITE", {}, "myDocumentBase");
+      el = new Suite("TESTSUITE", {}, "myDocumentBase");
+
+      el.appendChild(new Test("TEST", {
+        "ID": "moo",
+        "TYPE": "typeVal",
+        "VERSION": "versionVal",
+        "RECOMMENDATION": "recommendationVal",
+        "EDITION": "a b c",
+        "SECTIONS": "sa sb sc",
+        "ENTITIES": "both",
+        "URI": "a/b.xml",
+        "xml:base": "base/",
+      }, "myDocumentBase", fakeLoader));
+
+      el.appendChild(new Test("TEST", {
+        "ID": "moo2",
+        "TYPE": "typeVal",
+        "VERSION": "versionVal2",
+        "RECOMMENDATION": "recommendationVal2",
+        "EDITION": "a2 b2 c2",
+        "SECTIONS": "sa2 sb2 sc2",
+        "ENTITIES": "both",
+        "URI": "a/b.xml",
+        "xml:base": "base/",
+      }, "myDocumentBase", fakeLoader));
+
+      const subSuite = new Suite("TESTSUITE", {}, "myDocumentBase");
+      el.appendChild(subSuite);
+      subSuite.appendChild(new Test("TEST", {
+        "ID": "moo3",
+        "TYPE": "typeVal",
+        "VERSION": "versionVal",
+        "RECOMMENDATION": "recommendationVal",
+        "EDITION": "a b c",
+        "SECTIONS": "sa sb sc",
+        "ENTITIES": "both",
+        "URI": "a/b.xml",
+        "xml:base": "base/",
+      }, "myDocumentBase", fakeLoader));
+    });
+
+    describe("#getXMLAttributeValues", () => {
+      it("returns an empty array on an empty suite", () => {
+        expect(empty.getXMLAttributeValues("version")).to.deep.equal([]);
+      });
+
+      it("returns an array of values", () => {
+        expect(el.getXMLAttributeValues("version")).to.deep
+          .equal(["versionVal", "versionVal2", "versionVal"]);
+      });
+
+      it("handles properties that are arrays of values", () => {
+        expect(el.getXMLAttributeValues("edition")).to.deep
+          .equal(["a b c", "a2 b2 c2", "a b c"]);
+      });
+    });
+
+    describe("#getXMLAttributeStats", () => {
+      it("returns an empty map on an empty suite", () => {
+        expect(empty.getXMLAttributeStats("version")).to.deep.equal(new Map());
+      });
+
+      it("returns an map of value frequencies", () => {
+        expect(el.getXMLAttributeStats("version")).to.deep
+          .equal(new Map([["versionVal", 2], ["versionVal2", 1]]));
+      });
+
+      it("handles properties that are arrays of values", () => {
+        expect(el.getXMLAttributeStats("edition")).to.deep
+          .equal(new Map([["a b c", 2], ["a2 b2 c2", 1]]));
+      });
+    });
+
+    describe("#getPropertyValues", () => {
+      it("returns an empty array on an empty suite", () => {
+        expect(empty.getPropertyValues("version")).to.deep.equal([]);
+      });
+
+      it("returns an array of values", () => {
+        expect(el.getPropertyValues("version")).to.deep
+          .equal(["versionVal", "versionVal2", "versionVal"]);
+      });
+
+      it("handles properties that are arrays of values", () => {
+        expect(el.getPropertyValues("editions")).to.deep
+          .equal(["a", "b", "c", "a2", "b2", "c2", "a", "b", "c"]);
+      });
+    });
+
+    describe("#getPropertyStats", () => {
+      it("returns an empty map on an empty suite", () => {
+        expect(empty.getPropertyStats("version")).to.deep.equal(new Map());
+      });
+
+      it("returns an map of value frequencies", () => {
+        expect(el.getPropertyStats("version")).to.deep
+          .equal(new Map([["versionVal", 2], ["versionVal2", 1]]));
+      });
+
+      it("handles properties that are arrays of values", () => {
+        expect(el.getPropertyStats("editions")).to.deep
+          .equal(new Map([["a", 2], ["b", 2], ["c", 2], ["a2", 1], ["b2", 1],
+                          ["c2", 1]]));
+      });
+    });
   });
 
   describe("loadTests", () => {

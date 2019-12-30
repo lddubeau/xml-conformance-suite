@@ -29,7 +29,7 @@
   },
   "scripts": {
     "tsc": "tsc -p src",
-    "copy-src": "mkdir -p build/dist/ && cp -rp src/* build/dist/",
+    "copy-src": "mkdir -p build/dist/ && (cd src; cp -p --parent `find . -name '*.js'` ../build/dist)",
     "copy-bin": "mkdir -p build/dist && cp -rp bin build/dist/ && sed -i -e's;../src/cli/;../cli/;g' build/dist/bin/*",
     "clean-package": "mkdir -p build/dist && ../../tasks/clean-package package.json build/dist/package.json",
     "build": "npm run copy-src && npm run tsc && npm run copy-bin && npm run clean-package",

@@ -54,13 +54,14 @@ export function loadModules(Driver?: DriverCtor, Selection?: SelectionCtor):
 { Driver: DriverCtor, Selection: SelectionCtor} {
   if (Driver == null) {
     // tslint:disable-next-line:non-literal-require
-    ({ Driver } = require(path.join("..", getFromArgv("xml-driver"))));
+    ({ Driver } = require(path.resolve(__dirname, "..",
+                                       getFromArgv("xml-driver"))));
   }
 
   if (Selection == null) {
     // tslint:disable-next-line:non-literal-require
-    ({ Selection } = require(path.join("..",
-                                       getFromArgv("xml-selection"))));
+    ({ Selection } = require(path.resolve(__dirname, "..",
+                                          getFromArgv("xml-selection"))));
   }
 
   return {
