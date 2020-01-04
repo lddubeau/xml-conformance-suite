@@ -3,7 +3,6 @@ import { ResourceLoader } from "../../../lib/resource-loader";
 import { Suite, Test } from "../../../lib/test-suite";
 import { Selection, SelectionCtor,
          TestHandling } from "../../../selections/selection";
-import { mochaTestToTest } from "../support/test-registry";
 
 type TestInfo = { handling: TestHandling, test: Test };
 type SuiteInfo = { title: string, children: (SuiteInfo|TestInfo)[] };
@@ -74,8 +73,7 @@ export async function handleSuite(
         break;
       case "succeeds":
       case "fails":
-        const mochaTest = it(id, () => driver.run(test, handling));
-        mochaTestToTest.set(mochaTest, test);
+        it(id, () => driver.run(test, handling));
         break;
       default:
         throw new Error(`unexpected handling type: ${handling}`);
