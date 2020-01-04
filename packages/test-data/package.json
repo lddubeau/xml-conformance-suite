@@ -32,6 +32,7 @@
     "prepack": "node -e 'require(\"assert\")(!require(\"./package.json\").private)'",
     "self:pack": "npm run test && cd build/dist/ && (packname=`npm pack --silent`; mv $packname ..; echo $packname)",
     "prepublishOnly": "npm run pack-npjl",
-    "self:publish": "npm publish"
+    "self:publish": "npm publish",
+    "distclean": "npm run clean"
   }
 }
