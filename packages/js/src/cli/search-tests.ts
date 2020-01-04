@@ -137,8 +137,7 @@ function selectCommand(subargs: Record<string, any>): void {
 
   const child = spawn("xsltproc",
                       ["-",
-                       path.join(__dirname,
-                                 "../cleaned/xmlconf-flattened.xml")],
+                       path.join(testData, "cleaned/xmlconf-flattened.xml")],
                       { stdio: ["pipe", "inherit", "inherit"] });
   child.stdin.write(XSL_TEMPLATE.replace("@@EXPR@@", subargs.expr));
   child.stdin.end();
