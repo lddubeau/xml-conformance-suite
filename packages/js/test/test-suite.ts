@@ -87,7 +87,7 @@ describe("test-suite", () => {
         it("with an xml:base, joins xml:base with the parent's base", () => {
           const withBase = new Element("foo", { "xml:base": "sub" },
                                        "myDocumentBase");
-          const child = new Test("TEST", { ID: "foo", "xml:base": "sub2" },
+          const child = new Test("TEST", { "ID": "foo", "xml:base": "sub2" },
                                  "myDocumentBase", {} as ResourceLoader);
           withBase.appendChild(child);
           expect(child).to.have.property("base")
@@ -220,38 +220,39 @@ describe("test-suite", () => {
 
     describe("#sections", () => {
       it("has the sections of the SECTIONS attribute, split into array", () => {
-        expect(makeTest({ "SECTIONS":
+        expect(makeTest({ SECTIONS:
                           "a,b,,  , [,c,d] [e, f , g] [h][i][j k l] m  n" }))
           .to.have.property("sections").deep.equal(["a", "b", "m", "n"]);
       });
 
       it("throws if there is a nested open bracket", () => {
-        expect(() => makeTest({ "SECTIONS": "[][[a" }).sections).to
+        expect(() => makeTest({ SECTIONS: "[][[a" }).sections).to
           .throw(Error, "nested production");
       });
 
       it("throws if there is a spurious close bracket", () => {
-        expect(() => makeTest({ "SECTIONS": "[a]]" }).sections).to
+        expect(() => makeTest({ SECTIONS: "[a]]" }).sections).to
           .throw(Error, "extraneous bracket");
       });
     });
 
     describe("#productions", () => {
-      it("has the productions of the SECTIONS attribute, split into array", () => {
-        expect(makeTest({ "SECTIONS":
-                          "a,b,,  , [,c,d] [e, f , g] [h][i][j k l] m  n" }))
-          .to.have.property("productions").deep
-          .equal(["[c]", "[d]", "[e]", "[f]", "[g]", "[h]", "[i]", "[j]",
-                  "[k]", "[l]"]);
-      });
+      it("has the productions of the SECTIONS attribute, split into array",
+         () => {
+           expect(makeTest({ SECTIONS:
+                             "a,b,,  , [,c,d] [e, f , g] [h][i][j k l] m  n" }))
+             .to.have.property("productions").deep
+             .equal(["[c]", "[d]", "[e]", "[f]", "[g]", "[h]", "[i]", "[j]",
+                     "[k]", "[l]"]);
+         });
 
       it("throws if there is a nested open bracket", () => {
-        expect(() => makeTest({ "SECTIONS": "[][[a" }).productions).to
+        expect(() => makeTest({ SECTIONS: "[][[a" }).productions).to
           .throw(Error, "nested production");
       });
 
       it("throws if there is a spurious close bracket", () => {
-        expect(() => makeTest({ "SECTIONS": "[a]]" }).productions).to
+        expect(() => makeTest({ SECTIONS: "[a]]" }).productions).to
           .throw(Error, "extraneous bracket");
       });
     });
@@ -392,10 +393,9 @@ describe("test-suite", () => {
       });
     });
 
-    describe("#serializedRepresentation", () => {
-      it("returns the right data", () => {
-        expect(el.serializedRepresentation).to.deep.equal({
-          name: "TEST",
+    describe("#getSerializedRepresentation", () => {
+      it("returns the right data", async () => {
+        expect(await el.getSerializedRepresentation()).to.deep.equal({
           id: "moo",
           testType: "typeVal",
           version: "versionVal",
@@ -404,6 +404,10 @@ describe("test-suite", () => {
           sections: ["sa", "sb", "sc"],
           productions: ["[pa]"],
           entities: "both",
+          skipForNonValidatingParser: false,
+          forbidsNamespaces: false,
+          hasDTD: false,
+          hasBOM: false,
         });
       });
     });

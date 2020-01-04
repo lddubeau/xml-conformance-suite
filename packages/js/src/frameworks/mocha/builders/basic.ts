@@ -1,10 +1,10 @@
 /**
  * A mocha builder that builds the tests asynchronously.
  */
-import { DriverCtor } from "../../../drivers/base";
+import { DriverCtor } from "../../../drivers/driver";
 import { ResourceLoader } from "../../../lib/resource-loader";
 import { Suite } from "../../../lib/test-suite";
-import { SelectionCtor } from "../../../selections/base";
+import { SelectionCtor } from "../../../selections/selection";
 import { handleSuite } from "./common";
 
 /**

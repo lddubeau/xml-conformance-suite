@@ -2,10 +2,10 @@ import { expect } from "chai";
 
 import { makeTestHandlingByTypeTest } from "./common-tests";
 
-import { Driver } from "../../build/dist/drivers/base";
-import { Test } from "../../build/dist/lib/test-suite";
-import { TestHandling } from "../../build/dist/selections/base";
+import { DriverSpec } from "../../build/dist/drivers/driver-spec";
+import { TestSpec } from "../../build/dist/lib/test-spec";
 import { Selection } from "../../build/dist/selections/sax";
+import { TestHandling } from "../../build/dist/selections/selection";
 
 export function makeTests(): void {
   const expectations: Record<string, TestHandling> = {
@@ -15,12 +15,13 @@ export function makeTests(): void {
     "valid": "succeeds",
   };
 
-  makeTestHandlingByTypeTest(() => new Selection({} as Driver), expectations);
+  makeTestHandlingByTypeTest(() => new Selection({} as DriverSpec),
+                             expectations);
 
   describe("#shouldSkipTest", () => {
     let selection: Selection;
     before(() => {
-      selection = new Selection({ canValidate: false } as Driver);
+      selection = new Selection({ canValidate: false } as DriverSpec);
     });
 
     it("generally resolves to false", async () => {
@@ -34,7 +35,7 @@ export function makeTests(): void {
           includesProductions(): boolean {
             return false;
           },
-        } as unknown as Test)).to.be.false;
+        } as unknown as TestSpec)).to.be.false;
     });
 
     it("resolves to true on correct version and edition", async () => {
@@ -51,7 +52,7 @@ export function makeTests(): void {
         includesProductions(): boolean {
           return false;
         },
-      } as unknown as Test)).to.be.true;
+      } as unknown as TestSpec)).to.be.true;
     });
 
     it("resolves to true on correct section", async () => {
@@ -68,7 +69,7 @@ export function makeTests(): void {
         includesProductions(): boolean {
           return false;
         },
-      } as unknown as Test)).to.be.true;
+      } as unknown as TestSpec)).to.be.true;
     });
 
     it("resolves on correct production", async () => {
@@ -85,7 +86,7 @@ export function makeTests(): void {
           includesProductions(): boolean {
             return true;
           },
-        } as unknown as Test)).to.be.true;
+        } as unknown as TestSpec)).to.be.true;
     });
   });
 }

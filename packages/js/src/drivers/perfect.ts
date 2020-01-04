@@ -6,7 +6,7 @@
  */
 
 import { Test } from "../lib/test-suite";
-import { TestHandling } from "../selections/base";
+import { TestHandling } from "../selections/selection";
 import { BaseDriver } from "./base";
 
 /**
@@ -14,7 +14,8 @@ import { BaseDriver } from "./base";
  */
 export class Driver extends BaseDriver {
   constructor() {
-    super(/* canValidate */ true, /* processesExternalEntities */ true);
+    super("perfect", /* canValidate */ true,
+          /* processesExternalEntities */ true);
   }
 
   async run(test: Test, handling: TestHandling): Promise<void> {

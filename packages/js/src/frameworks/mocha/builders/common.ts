@@ -1,8 +1,8 @@
-import { Driver, DriverCtor } from "../../../drivers/base";
+import { Driver, DriverCtor } from "../../../drivers/driver";
 import { ResourceLoader } from "../../../lib/resource-loader";
 import { Suite, Test } from "../../../lib/test-suite";
 import { Selection, SelectionCtor,
-         TestHandling } from "../../../selections/base";
+         TestHandling } from "../../../selections/selection";
 import { mochaTestToTest } from "../support/test-registry";
 
 type TestInfo = { handling: TestHandling, test: Test };

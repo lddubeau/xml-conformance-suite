@@ -1,0 +1,64 @@
+#!/usr/bin/env node
+
+"use strict";
+
+/* eslint-disable no-console */
+
+//
+// Safety harness...
+//
+
+class Fatal extends Error {
+  constructor(name, message) {
+    super(message);
+    this.name = "Fatal";
+  }
+}
+
+process.on("uncaughtException", (ex) => {
+  if (ex instanceof Fatal) {
+    process.stderr.write(`${ex.message}\n`);
+    process.exit(1);
+  }
+  else {
+    throw ex;
+  }
+});
+
+//
+// Actual logic
+//
+
+const { execFile } = require("child_process");
+const semver = require("semver");
+
+execFile("git", ["status", "--porcelain"], (error, status) => {
+  if (error) {
+    throw error;
+  }
+
+  execFile("git", ["describe", "--match", "v*"], (descError, desc) => {
+    if (descError) {
+      throw descError;
+    }
+
+    desc = desc.trim();
+
+    const sepIx = desc.indexOf("-");
+    const version = sepIx !== -1 ? desc.slice(1, sepIx) : desc;
+    if (!semver.valid(version)) {
+      throw new Fatal(`invalid version: ${version}`);
+    }
+
+    if (status.length !== 0) {
+      desc += "-unclean";
+    }
+
+    console.log(`\
+module.exports = {
+  desc: "${desc}",
+  date: "${new Date().toISOString()}",
+};
+`);
+  });
+});
