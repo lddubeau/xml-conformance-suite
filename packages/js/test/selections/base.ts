@@ -2,11 +2,11 @@ import { expect } from "chai";
 
 import { makeTestHandlingByTypeTest } from "./common-tests";
 
-import { Driver } from "../../build/dist/drivers/base";
+import { DriverSpec } from "../../build/dist/drivers/driver-spec";
 import { BAD_TESTS } from "../../build/dist/lib/test-errata";
-import { Test } from "../../build/dist/lib/test-suite";
-import { BaseSelection, Selection,
-         TestHandling } from "../../build/dist/selections/base";
+import { TestSpec } from "../../build/dist/lib/test-spec";
+import { BaseSelection } from "../../build/dist/selections/base";
+import { Selection, TestHandling } from "../../build/dist/selections/selection";
 
 // tslint:disable-next-line:max-func-body-length
 export function makeTests(): void {
@@ -18,17 +18,19 @@ export function makeTests(): void {
   };
 
   makeTestHandlingByTypeTest(() =>
-                             new BaseSelection({ canValidate: true } as Driver),
+                             new BaseSelection({ canValidate: true } as
+                                               DriverSpec),
                              expectations);
 
   describe("#shouldSkipTest", () => {
     let selection: Selection;
     before(() => {
-      selection = new BaseSelection({ canValidate: false } as Driver);
+      selection = new BaseSelection({ canValidate: false } as DriverSpec);
     });
 
     it("resolves to false", async () => {
-      expect(await selection.shouldSkipTest({} as Test)).to.be.false;
+      expect(await selection.shouldSkipTest({} as TestSpec))
+        .to.be.false;
     });
   });
 
@@ -37,9 +39,10 @@ export function makeTests(): void {
       let selection: Selection;
       before(() => {
         selection = new BaseSelection({
+          name: "foo",
           canValidate: false,
           processesExternalEntities: false,
-        } as Driver);
+        });
       });
 
       describe("skips tests", () => {
@@ -47,7 +50,7 @@ export function makeTests(): void {
           expect(selection
                  .skipForNonValidatingParser({
                    skipForNonValidatingParser: true,
-                 } as Test))
+                 } as TestSpec))
             .to.be.true;
         });
 
@@ -55,12 +58,12 @@ export function makeTests(): void {
           expect(selection.skipForNonValidatingParser({
             testType: "not-wf",
             entities: "both",
-          } as Test)).to.be.true;
+          } as TestSpec)).to.be.true;
 
           expect(selection.skipForNonValidatingParser({
             testType: "valid",
             entities: "both",
-          } as Test)).to.be.true;
+          } as TestSpec)).to.be.true;
         });
       });
 
@@ -69,14 +72,14 @@ export function makeTests(): void {
           expect(selection.skipForNonValidatingParser({
             testType: "not-wf",
             entities: "none",
-          } as Test)).to.be.false;
+          } as TestSpec)).to.be.false;
         });
 
         it("that require entities but check for invalidity", () => {
           expect(selection.skipForNonValidatingParser({
             testType: "invalid",
             entities: "both",
-          } as Test)).to.be.false;
+          } as TestSpec)).to.be.false;
         });
       });
     });
@@ -85,30 +88,31 @@ export function makeTests(): void {
       let selection: Selection;
       before(() => {
         selection = new BaseSelection({
+          name: "foo",
           canValidate: true,
           processesExternalEntities: true,
-        } as Driver);
+        });
       });
 
       it("does not skips tests", () => {
         expect(selection
                .skipForNonValidatingParser({
                  skipForNonValidatingParser: true,
-               } as Test)).to.be.false;
+               } as TestSpec)).to.be.false;
       });
     });
 
     describe("with validating parser", () => {
       let selection: Selection;
       before(() => {
-        selection = new BaseSelection({ canValidate: true } as Driver);
+        selection = new BaseSelection({ canValidate: true } as DriverSpec);
       });
 
       it("does not skips tests", () => {
         expect(selection
                .skipForNonValidatingParser({
                  skipForNonValidatingParser: true,
-               } as Test)).to.be.false;
+               } as TestSpec)).to.be.false;
       });
     });
   });
@@ -117,40 +121,43 @@ export function makeTests(): void {
     let selection: Selection;
     before(() => {
       selection = new BaseSelection({
+        name: "foo",
         canValidate: true,
         processesExternalEntities: true,
-      } as Driver);
+      });
     });
 
     describe("skips", () => {
       it("bad tests", () => selection.getTestHandling({
         id: BAD_TESTS[0],
-      } as Test).then(x => expect(x).to.equal("skip")));
+      } as TestSpec).then(x => expect(x).to.equal("skip")));
 
       it("tests reported by #shouldSkipTest", async () => {
         const skipping = new BaseSelection({
+          name: "foo",
           canValidate: true,
           processesExternalEntities: true,
-        } as Driver);
+        });
 
         skipping.shouldSkipTest = () => Promise.resolve(true);
 
         expect(await skipping.getTestHandling({
           id: "good",
-        } as Test)).to.equal("skip");
+        } as TestSpec)).to.equal("skip");
       });
 
       it("tests reported by #skipForNonValidatingParser", async () => {
         const skipping = new BaseSelection({
+          name: "foo",
           canValidate: true,
           processesExternalEntities: true,
-        } as Driver);
+        });
 
         skipping.skipForNonValidatingParser = () => true;
 
         expect(await skipping.getTestHandling({
           id: "good",
-        } as Test)).to.equal("skip");
+        } as TestSpec)).to.equal("skip");
       });
     });
 
@@ -162,7 +169,7 @@ export function makeTests(): void {
          () => selection.getTestHandling({
            id: "good",
            testType: key,
-         } as Test).then(x => expect(x).to.equal(expected)));
+         } as TestSpec).then(x => expect(x).to.equal(expected)));
     }
   });
 }

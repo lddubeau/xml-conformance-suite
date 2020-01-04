@@ -2,13 +2,13 @@ import { expect } from "chai";
 
 import { makeTestHandlingByTypeTest } from "./common-tests";
 
-import { Driver } from "../../build/dist/drivers/base";
-import { Test } from "../../build/dist/lib/test-suite";
-import { TestHandling } from "../../build/dist/selections/base";
+import { DriverSpec } from "../../build/dist/drivers/driver-spec";
+import { TestSpec } from "../../build/dist/lib/test-spec";
+import { TestHandling } from "../../build/dist/selections/selection";
 import { Selection } from "../../build/dist/selections/xmllint";
 
 export function makeTests(): void {
-  function makeTestObject(overrides?: any): Test {
+  function makeTestObject(overrides?: any): TestSpec {
     return {
       includesRecommendation(): boolean {
         return false;
@@ -30,12 +30,13 @@ export function makeTests(): void {
     "valid": "succeeds",
   };
 
-  makeTestHandlingByTypeTest(() => new Selection({} as Driver), expectations);
+  makeTestHandlingByTypeTest(() => new Selection({} as DriverSpec),
+                             expectations);
 
   describe("#shouldSkipTest", () => {
     let selection: Selection;
     before(() => {
-      selection = new Selection({ canValidate: false } as Driver);
+      selection = new Selection({ canValidate: false } as DriverSpec);
     });
 
     it("generally resolves to false", async () => {

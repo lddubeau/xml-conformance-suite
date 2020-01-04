@@ -2,7 +2,7 @@ import { expect } from "chai";
 
 import { BaseDriver } from "../../build/dist/drivers/base";
 import { Test } from "../../build/dist/lib/test-suite";
-import { TestHandling } from "../../build/dist/selections/base";
+import { TestHandling } from "../../build/dist/selections/selection";
 
 // tslint:disable-next-line:class-name
 class BaseDriver_ extends BaseDriver {
@@ -13,19 +13,58 @@ class BaseDriver_ extends BaseDriver {
 }
 
 export function makeTests(): void {
-  it("#canValidate is false", () => {
-    expect(new BaseDriver_()).to.have.property("canValidate").false;
+  describe("#canValidate is", () => {
+    it("false by default", () => {
+      expect(new BaseDriver_("foo")).to.have.property("canValidate").false;
+    });
+
+    it("true if set to true", () => {
+      expect(new BaseDriver_("foo", true, false)).to.have
+        .property("canValidate").true;
+    });
+
+    it("false if set to false", () => {
+      expect(new BaseDriver_("foo", false, true)).to.have
+        .property("canValidate").false;
+    });
   });
 
-  it("#processesExternalEntities is false", () => {
-    expect(new BaseDriver_())
-      .to.have.property("processesExternalEntities").false;
+  describe("#processesExternalEntities is", () => {
+    it("false by default", () => {
+      expect(new BaseDriver_("foo"))
+        .to.have.property("processesExternalEntities").false;
+    });
+
+    it("true if set to true", () => {
+      expect(new BaseDriver_("foo", false, true)).to.have
+        .property("processesExternalEntities").true;
+    });
+
+    it("false if set to false", () => {
+      expect(new BaseDriver_("foo", true, false)).to.have
+        .property("processesExternalEntities").false;
+    });
+  });
+
+  it("#name is set", () => {
+    expect(new BaseDriver_("foo")).to.have.property("name").equal("foo");
+  });
+
+  describe("#getSerializedRepresentation", () => {
+    it("returns a serialized representation", () => {
+      expect(new BaseDriver_("foo", true, false).getSerializedRepresentation())
+        .to.deep.equal({
+          name: "foo",
+          canValidate: true,
+          processesExternalEntities: false,
+        });
+    });
   });
 
   describe("#processResult", () => {
     let driver: BaseDriver;
     before(() => {
-      driver = new BaseDriver_();
+      driver = new BaseDriver_("foo");
     });
 
     describe("throws", () => {

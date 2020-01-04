@@ -9,11 +9,12 @@
  * whatwg does not require browsers to provide validation facilities so this
  * selector excludes all validation tests.
  */
-import { Test } from "../lib/test-suite";
-import { BaseSelection, TestHandling } from "./base";
+import { TestSpec } from "../lib/test-spec";
+import { BaseSelection } from "./base";
+import { TestHandling } from "./selection";
 
 export class Selection extends BaseSelection {
-  getHandlingByType(test: Test): TestHandling {
+  getHandlingByType(test: TestSpec): TestHandling {
     const { testType } = test;
     switch (testType) {
     case "not-wf":
@@ -28,7 +29,7 @@ export class Selection extends BaseSelection {
     }
   }
 
-  async shouldSkipTest(test: Test): Promise<boolean> {
+  async shouldSkipTest(test: TestSpec): Promise<boolean> {
     // whatwg refers to XML version 1.0 edition 5, and to XML Namespaces version
     // 1.0. So we include only those tests that pertain to XML version 1.0
     // edition 5 and exclude those tests pertaining to XML Namespaces version

@@ -4,8 +4,8 @@
  *
  * This selector is meant to select only those tests that Chrome passes.
  */
-import { Test } from "../lib/test-suite";
-import { TestHandling } from "./base";
+import { TestSpec } from "../lib/test-spec";
+import { TestHandling } from "./selection";
 import { Selection as WhatwgSelection } from "./whatwg";
 
 //
@@ -65,7 +65,7 @@ const PROBLEMATIC: Record<string, string> = {
 };
 
 export class Selection extends WhatwgSelection {
-  async getTestHandling(test: Test): Promise<TestHandling> {
+  async getTestHandling(test: TestSpec): Promise<TestHandling> {
     return PROBLEMATIC[test.id] !== undefined ? "skip" :
       super.getTestHandling(test);
   }

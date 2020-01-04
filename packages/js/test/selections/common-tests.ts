@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
-import { Test } from "../../build/dist/lib/test-suite";
-import { Selection, TestHandling } from "../../build/dist/selections/base";
+import { TestSpec } from "../../build/dist/lib/test-spec";
+import { Selection, TestHandling } from "../../build/dist/selections/selection";
 
 export function makeTestHandlingByTypeTest(makeSelection: () => Selection,
                                            expectations:
@@ -16,7 +16,7 @@ export function makeTestHandlingByTypeTest(makeSelection: () => Selection,
       const expected = expectations[key];
       // eslint-disable-next-line no-loop-func
       it(`expects a ${expected} for ${key}`, () => {
-        expect(selection.getHandlingByType({ testType: key } as Test))
+        expect(selection.getHandlingByType({ testType: key } as TestSpec))
           .to.equal(expected);
       });
     }

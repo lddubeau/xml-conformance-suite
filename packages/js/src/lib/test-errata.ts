@@ -33,9 +33,9 @@ export const BAD_TESTS = [
 ];
 
 export const ERRORS: Record<string, Record<string, string>> = {
-  __proto__: null as any as Record<string, string>, // Work around TS silliness.
+  "__proto__": null as any as Record<string, string>, // Work around TS silliness.
   "not-wf-sa-077": {
     // The original value is "41. [68]", which makes no sense.
-    "SECTIONS": "4.1 [68]",
-  }
+    SECTIONS: "4.1 [68]",
+  },
 };

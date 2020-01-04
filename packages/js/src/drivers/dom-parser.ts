@@ -1,11 +1,11 @@
 import { ResourceLoader } from "../lib/resource-loader";
 import { Test } from "../lib/test-suite";
-import { TestHandling } from "../selections/base";
+import { TestHandling } from "../selections/selection";
 import { BaseDriver } from "./base";
 
 export class Driver extends BaseDriver {
   constructor(private readonly resourceLoader: ResourceLoader) {
-    super();
+    super("dom-parser");
   }
 
   async run(test: Test, handling: TestHandling): Promise<void> {

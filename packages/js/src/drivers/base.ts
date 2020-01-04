@@ -4,59 +4,17 @@
  * @copyright The contibutors of xml-conformance-suite.
  */
 
-import { ResourceLoader } from "../lib/resource-loader";
 import { Test } from "../lib/test-suite";
-import { TestHandling } from "../selections/base";
-
-export type DriverCtor = new (resourceLoader: ResourceLoader) => Driver;
-
-export interface Driver {
-  /**
-   * This flag indicates whether this XML processor is able to validate
-   * documents.
-   */
-  readonly canValidate: boolean;
-
-  /**
-   * This flag indicates whether this XML processor is able to process
-   * external entities.
-   */
-  readonly processesExternalEntities: boolean;
-
-  /**
-   * Run a test. This method must be stateless. That is, it must be possible to
-   * call this method multiple times on the same instance of ``Driver`` and have
-   * each call run independently from one another.
-   *
-   * @param test The test to run.
-   *
-   * @param handling The handling that was returned by the selector.
-   *
-   * @returns ``undefined`` or a ``Promise``. It must return a promise if the
-   * test is to be run asynchronously. The promise must resolve if the test is
-   * successful, or be rejected if the test fails. Otherwise, the test is run
-   * synchronously and this function must return ``undefined``.
-   */
-  run(test: Test, handling: TestHandling): Promise<void> | undefined;
-
-  /**
-   * Throw an error if we did not get the expected results.
-   *
-   * @param test The test.
-   *
-   * @param handling The test handling.
-   *
-   * @param {boolean} succeeded Whether the test was successful.
-   */
-  // eslint-disable-next-line class-methods-use-this
-  processResult(test: Test, handling: TestHandling, succeeded: boolean): void;
-}
+import { TestHandling } from "../selections/selection";
+import { Driver } from "./driver";
+import { SerializedDriver } from "./serialized-driver";
 
 /**
  * A base driver which implements common functionality.
  */
 export abstract class BaseDriver implements Driver {
-  constructor(readonly canValidate: boolean = false,
+  constructor(readonly name: string,
+              readonly canValidate: boolean = false,
               readonly processesExternalEntities: boolean = false) {}
 
   abstract run(test: Test, handling: TestHandling): Promise<void> | undefined;
@@ -83,5 +41,13 @@ export abstract class BaseDriver implements Driver {
     default:
       throw new Error(`unexpected handling value: ${handling}`);
     }
+  }
+
+  getSerializedRepresentation(): SerializedDriver {
+    return {
+      name: this.name,
+      canValidate: this.canValidate,
+      processesExternalEntities: this.processesExternalEntities,
+    };
   }
 }

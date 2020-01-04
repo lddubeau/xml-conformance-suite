@@ -11,18 +11,33 @@
  * ```
  * @copyright The contibutors of xml-conformance-suite.
  */
+import minimist from "minimist";
+
 import { loadModules } from "../../../lib/module-loader";
 import { ResourceLoader } from "../../../lib/resource-loader";
 import { loadTests } from "../../../lib/test-parser";
 import { build } from "../builders/basic";
+
+const argv = minimist(process.argv);
 
 // tslint:disable-next-line:no-typeof-undefined
 if (typeof run === "undefined") {
   throw new Error("you must use --delay with this runner");
 }
 
+function getFromArgv(options: Record<string, any>, name: string): string {
+  const value = options[name];
+
+  if (value === undefined) {
+    throw new Error(`you must specify ${name}`);
+  }
+
+  return value;
+}
+
 // We use the load utility to get our classes.
-const { Driver, Selection } = loadModules();
+const { Driver, Selection } = loadModules(getFromArgv(argv, "xml-driver"),
+                                          getFromArgv(argv, "xml-selection"));
 const resourceLoader = new ResourceLoader();
 loadTests(resourceLoader)
   .then(suite => build(suite, "conformance", resourceLoader, Driver, Selection))

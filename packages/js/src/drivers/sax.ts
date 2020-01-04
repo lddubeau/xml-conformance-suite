@@ -6,7 +6,7 @@ import sax from "sax";
 
 import { ResourceLoader } from "../lib/resource-loader";
 import { Test } from "../lib/test-suite";
-import { TestHandling } from "../selections/base";
+import { TestHandling } from "../selections/selection";
 import { BaseDriver } from "./base";
 
 export class Driver extends BaseDriver {
@@ -14,7 +14,7 @@ export class Driver extends BaseDriver {
    * @param resourceLoader A resource loader required by for loading test files.
    */
   constructor(private readonly resourceLoader: ResourceLoader) {
-    super();
+    super("sax");
   }
 
   async run(test: Test, handling: TestHandling): Promise<void> {

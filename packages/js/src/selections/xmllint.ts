@@ -39,8 +39,9 @@
  *
  * @copyright The contibutors of xml-conformance-suite.
  */
-import { Test } from "../lib/test-suite";
-import { BaseSelection, TestHandling } from "./base";
+import { TestSpec } from "../lib/test-spec";
+import { BaseSelection } from "./base";
+import { TestHandling } from "./selection";
 
 // xmllint does not seem to enforce the validation constraints that
 // ``standalone="yes"`` entails so it fails a bunch of tests that test for those
@@ -70,7 +71,7 @@ const OTHER_EXCLUSIONS = [
 const ALL_EXCLUSIONS = STANDALONE_EXCLUSIONS.concat(OTHER_EXCLUSIONS);
 
 export class Selection extends BaseSelection {
-  getHandlingByType(test: Test): TestHandling {
+  getHandlingByType(test: TestSpec): TestHandling {
     const { testType } = test;
     switch (testType) {
     case "not-wf":
@@ -85,7 +86,7 @@ export class Selection extends BaseSelection {
     }
   }
 
-  async shouldSkipTest(test: Test): Promise<boolean> {
+  async shouldSkipTest(test: TestSpec): Promise<boolean> {
       return ALL_EXCLUSIONS.includes(test.id) ||
       test.includesRecommendation("NS1.1") ||
       !(test.includesVersion("1.0") && test.includesEdition("5"));

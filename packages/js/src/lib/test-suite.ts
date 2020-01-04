@@ -6,8 +6,10 @@
 import path from "path";
 
 import { ResourceLoader } from "./resource-loader";
+import { SerializedTest } from "./serialized-test";
 import { makeFrequencyMap } from "./stats";
 import { ERRORS } from "./test-errata";
+import { TestSpec, TestType } from "./test-spec";
 
 /**
  * An XML element.
@@ -33,8 +35,6 @@ export class Element {
    * @param attributes A map of attributes.
    *
    * @param documentBase The path representing the document base.
-   *
-   * @private
    */
   constructor(readonly name: string,
               readonly attributes: Record<string, string>,
@@ -116,18 +116,6 @@ export function isSuite(el: Element): el is Suite {
   return el.name === "TESTSUITE" || el.name === "TESTCASES";
 }
 
-export interface SerializedTest {
-  name: string;
-  id: string;
-  testType: string;
-  version: string | undefined;
-  recommendation: string;
-  editions: string[] | undefined;
-  sections: string[];
-  productions: string[];
-  entities: string;
-}
-
 interface ParsedSections {
   sections: string[];
   productions: string[];
@@ -136,7 +124,7 @@ interface ParsedSections {
 /**
  * A specialized ``Element`` for ``<TEST>`` elements.
  */
-export class Test extends Element {
+export class Test extends Element implements TestSpec {
   private _testContent: Promise<string> | undefined;
 
   private _hasDTD: Promise<boolean> | undefined;
@@ -173,31 +161,14 @@ export class Test extends Element {
     }
   }
 
-  /** The test id. It is unique throughout the suite. */
   get id(): string {
     return this.mustGetAttribute("ID");
   }
 
-  /**
-   * The test type:
-   *
-   * - ``"not-wf"``: parse a malformed document
-   *
-   * - ``"valid"``: parse a valid document,
-   *
-   * - ``invalid``:  parse an invalid document,
-   *
-   * - ``error``: errors that may optionally be reported by validating
-   *   processors.
-   */
-  get testType(): string {
-    return this.mustGetAttribute("TYPE");
+  get testType(): TestType {
+    return this.mustGetAttribute("TYPE") as TestType;
   }
 
-  /**
-   * The version of XML to which this test applies. May be ``undefined``, which
-   * means "applies to all versions". Or hold the values "1.1" or "1.0".
-   */
   get version(): string | undefined {
     const version = this.attributes.VERSION;
     //
@@ -283,56 +254,14 @@ export class Test extends Element {
     return this._parsedSections;
   }
 
-  /**
-   * An array of sections to which this test applies.
-   *
-   * The W3C test suite records two types of values under the attribute
-   * "SECTIONS":
-   *
-   * - section numbers proper: "2.1", "4.3.2", etc. These correspond to the
-   *   headings in the specification.
-   *
-   * - grammar production numbers: "[12]", "[53]", etc. These are always in
-   *   brackets. They correspond to the grammar rules in the specification.
-   *
-   * This field is an array that contains only section numbers proper.
-   */
   get sections(): string[] {
     return this.parsedSections.sections;
   }
 
-  /**
-   * An array of productions to which this test applies.
-   *
-   * The W3C test suite records two types of values under the attribute
-   * "SECTIONS":
-   *
-   * - section numbers proper: "2.1", "4.3.2", etc. These correspond to the
-   *   headings in the specification.
-   *
-   * - grammar production numbers: "[12]", "[53]", etc. These are always in
-   *   brackets. They correspond to the grammar rules in the specification.
-   *
-   * This field is an array that contains only the production numbers, including
-   * the brackets.
-   */
   get productions(): string[] {
     return this.parsedSections.productions;
   }
 
-  /**
-   * The type of external entities that must be read for this test to work
-   * successfully.
-   *
-   * Validating parsers are required to read external entities. Non-validating
-   * parsers are not required to read them. So non-validating parsers that do
-   * not read external entities should skip test that depend on issues being
-   * present in external entities.
-   *
-   * Most non-validating parsers care only whether the value is "none" or not
-   * and will skip all tests for which the value is not "none". See the W3C DTD
-   * for details about the other values.
-   */
   get entities(): string {
     // A lack of value means "none".
     return this.attributes.ENTITIES || "none";
@@ -347,15 +276,6 @@ export class Test extends Element {
     return this.resolvePath(this.mustGetAttribute("URI"));
   }
 
-  /**
-   * A flag indicating whether this test should be skipped when running a
-   * non-validating parser. The value of the flag is inherent to the test,
-   * irrespective of what parser is being tested.
-   *
-   * Concretely, the value is true if the test type is ``"invalid"``. Tests of
-   * type ``"invalid"`` must be skipped by non-validating parsers since it is
-   * not possible for a non-validating parser to generate the validation errors.
-   */
   get skipForNonValidatingParser(): boolean {
     return this.testType === "invalid";
   }
@@ -373,25 +293,11 @@ export class Test extends Element {
     return content;
   }
 
-  /**
-   * Some tests will work correctly if and only if the parser turns off
-   * namespace processing. These tests in effect forbid the use of namespaces.
-   *
-   * Example: in XML without namespaces, the document ``<a:foo/>`` is
-   * well-formed and contains a single empty element named ``a:foo``. Whereas
-   * when namespaces are in effect, the same document contains an element named
-   * ``foo`` in the namespace ``a``, and is malformed because the prefix ``a``
-   * is not defined.
-   */
   get forbidsNamespaces(): boolean {
     const ns = this.attributes.NAMESPACE;
     return !(ns === undefined || ns === "yes");
   }
 
-  /**
-   * @returns Whether or not the test file for this test has a DTD associated
-   * with it.
-   */
   getHasDTD(): Promise<boolean> {
     if (this._hasDTD === undefined) {
       this._hasDTD =
@@ -401,9 +307,6 @@ export class Test extends Element {
     return this._hasDTD;
   }
 
-  /**
-   * @returns Whether or not the test file for this test has a BOM in it.
-   */
   getHasBOM(): Promise<boolean> {
     if (this._hasBOM === undefined) {
       this._hasBOM = (async () => {
@@ -417,59 +320,27 @@ export class Test extends Element {
     return this._hasBOM;
   }
 
-  /**
-   * @param desiredRecommendation The recommendation to test.
-   *
-   * @returns ``true`` if ``desiredRecommendation`` is included by this test,
-   * ``false`` otherwise.
-   */
   includesRecommendation(desiredRecommendation: string): boolean {
     return this.recommendation === desiredRecommendation;
   }
 
-  /**
-   * @param desiredVersion The XML version to test.
-   *
-   * @returns ``true`` if ``desiredVersion`` is included by this test,
-   * ``false`` otherwise.
-   */
   includesVersion(desiredVersion: string): boolean {
     const { version } = this;
     // An undefined VERSION means "all versions".
     return version === undefined || version === desiredVersion;
   }
 
-  /**
-   * @param desiredEdition The XML edition to test.
-   *
-   * @returns ``true`` if ``desiredEdition`` is included by this test,
-   * ``false`` otherwise.
-   */
   includesEdition(desiredEdition: string): boolean {
     const { editions } = this;
     // An undefined EDITION means "all editions".
     return editions === undefined || editions.includes(desiredEdition);
   }
 
-  /**
-   * @param desiredSections The sections of the XML specification to test.
-   *
-   * @returns ``true`` if any value in ``desiredSections`` is included by this
-   * test, ``false`` otherwise.
-   */
   includesSections(desiredSections: string[]): boolean {
     const { sections } = this;
     return desiredSections.some(section => sections.includes(section));
   }
 
-  /**
-   * @param desiredProductions The productions of the XML specification to test.
-   * Note that this function expects square brackets around the production
-   * numbers.
-   *
-   * @returns ``true`` if any value in ``desiredProductions`` is included by
-   * this test, ``false`` otherwise.
-   */
   includesProductions(desiredProductions: string[]): boolean {
     const { productions } = this;
     return desiredProductions
@@ -477,9 +348,8 @@ export class Test extends Element {
   }
 
   /** A serialized representation of the test. */
-  get serializedRepresentation(): SerializedTest {
+  async getSerializedRepresentation(): Promise<SerializedTest> {
     return {
-      name: this.name,
       id: this.id,
       testType: this.testType,
       version: this.version,
@@ -488,6 +358,10 @@ export class Test extends Element {
       sections: this.sections,
       productions: this.productions,
       entities: this.entities,
+      skipForNonValidatingParser: this.skipForNonValidatingParser,
+      forbidsNamespaces: this.forbidsNamespaces,
+      hasDTD: await this.getHasDTD(),
+      hasBOM: await this.getHasBOM(),
     };
   }
 }
