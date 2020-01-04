@@ -36,7 +36,7 @@
     "build": "npm run generate-build-info && npm run copy-src && npm run tsc && npm run copy-bin && npm run clean-package",
     "test": "npm run build && mocha",
     "posttest": "npm run lint",
-    "lint": "eslint bin/* \"src/**/*.js\" \"test/**/*.js\" && npmPkgJsonLint ./package.json",
+    "lint": "tslint -p src && tslint -p test && eslint bin/* \"src/**/*.js\" \"test/**/*.js\" && npmPkgJsonLint ./package.json",
     "prepack": "node -e 'require(\"assert\")(!require(\"./package.json\").private)'",
     "self:pack": "npm run test && cd build/dist/ && (packname=`npm pack --silent`; mv $packname ..; echo $packname)",
     "prepublishOnly": "npm run pack-npjl",
