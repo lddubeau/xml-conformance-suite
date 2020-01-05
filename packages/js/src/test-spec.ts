@@ -3,6 +3,11 @@
  */
 
 /**
+ * The possible values for the test versions.
+ */
+export type TestVersion = "1.0" | "1.1" | undefined;
+
+/**
  * Indicates what kind of test is being performed.
  *
  * - ``"not-wf"``: parse a malformed document: the parser must report an error.
@@ -16,6 +21,12 @@
  */
 export type TestType = "not-wf" | "valid" | "invalid" | "error";
 
+/**
+ * The possible values for the test recommendation.
+ */
+export type TestRecommendation = "XML1.0" | "XML1.1" | "NS1.0" | "NS1.1" |
+  "XML1.0-errata2e" | "XML1.0-errata3e" | "XML1.0-errata4e" | "NS1.0-errata1e";
+
 export interface TestSpec {
   /** The test id. It is unique throughout the suite. */
   id: string;
@@ -27,10 +38,10 @@ export interface TestSpec {
    * The version of XML to which this test applies. May be ``undefined``, which
    * means "applies to all versions". Or hold the values "1.1" or "1.0".
    */
-  version: string | undefined;
+  version: TestVersion;
 
   /** The recommendation to which this test applies. */
-  recommendation: string;
+  recommendation: TestRecommendation;
 
   /**
    * An array of editions to which this test applies. An undefined value means

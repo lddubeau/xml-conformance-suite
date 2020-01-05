@@ -9,7 +9,8 @@ import { ResourceLoader } from "./resource-loader";
 import { SerializedTest } from "./serialized-test";
 import { makeFrequencyMap } from "./stats";
 import { ERRORS } from "./test-errata";
-import { TestSpec, TestType } from "./test-spec";
+import { TestRecommendation, TestSpec, TestType,
+         TestVersion } from "./test-spec";
 
 /**
  * An XML element.
@@ -169,8 +170,8 @@ export class Test extends Element implements TestSpec {
     return this.mustGetAttribute("TYPE") as TestType;
   }
 
-  get version(): string | undefined {
-    const version = this.attributes.VERSION;
+  get version(): TestVersion {
+    const version = this.attributes.VERSION as (undefined | "1.0" | "1.1");
     //
     // The presence of an edition implies that it applies to version 1.0. The
     // DTD says that when EDITION is set, then VERSION should have a single
@@ -190,10 +191,15 @@ export class Test extends Element implements TestSpec {
       version;
   }
 
-  /** The recommendation to which this test applies. */
-  get recommendation(): string {
+  /**
+   * The recommendation to which this test applies. The recommendation is
+   * essentially a reference to the specific standard that justifies this test.
+   * (Whereas version declares which part of a processor is being tested: the
+   * part that deals with 1.0, with 1.1 or both.
+   */
+  get recommendation(): TestRecommendation {
     // An undefined RECOMMENDATION attribute means "XML1.0".
-    return this.attributes.RECOMMENDATION || "XML1.0";
+    return (this.attributes.RECOMMENDATION ?? "XML1.0") as TestRecommendation;
   }
 
   /**
@@ -201,8 +207,7 @@ export class Test extends Element implements TestSpec {
    * "all editions".
    */
   get editions(): string[] | undefined {
-    const edition = this.attributes.EDITION;
-    return edition !== undefined ? edition.split(/\s+/) : undefined;
+    return this.attributes.EDITION?.split(/\s+/);
   }
 
   private get parsedSections(): ParsedSections {
