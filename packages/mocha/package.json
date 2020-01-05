@@ -1,13 +1,14 @@
 {
-  "name": "@xml-conformance-suite/js",
+  "name": "@xml-conformance-suite/mocha",
   "version": "1.2.0",
   "private": true,
-  "description": "A conformance suite for tools that parse XML.",
+  "description": "This package provides a builder and runner for running the suite as Mocha tests.",
   "keywords": [
     "XML",
     "parsing",
     "parser",
-    "test"
+    "test",
+    "mocha"
   ],
   "homepage": "https://github.com/lddubeau/xml-conformance-suite",
   "repository": {
@@ -20,23 +21,21 @@
   "author": "Louis-Dominique Dubeau <ldd@lddubeau.com>",
   "license": "MIT AND W3C-19980720",
   "dependencies": {
-    "@xml-conformance-suite/test-data": "^1.2.0",
-    "argparse": "^1.0.10",
-    "chai": "^4.2.0",
-    "minimist": "^1.2.0",
-    "mocha": "^6.2.2",
-    "saxes": "^4.0.2"
+    "@xml-conformance-suite/js": "^1.2.0",
+    "minimist": "^1.2.0"
+  },
+  "peerDependencies": {
+    "mocha": "6.x || 7.x"
   },
   "scripts": {
     "tsc": "tsc -p src",
     "generate-build-info": "mkdir -p build/dist/; ../../tasks/generate-build-info > build/dist/build-info.js",
-    "copy-bin": "mkdir -p build/dist && cp -rp bin build/dist/ && sed -i -e's;../src/cli/;../cli/;g' build/dist/bin/*",
     "clean-package": "mkdir -p build/dist && ../../tasks/clean-package package.json build/dist/package.json",
     "add-modules": "cd build/dist; ln -sf ../../node_modules .",
-    "build": "npm run generate-build-info && npm run tsc && npm run copy-bin && npm run clean-package && npm run add-modules",
+    "build": "npm run generate-build-info && npm run tsc && npm run clean-package && npm run add-modules",
     "test": "npm run build && mocha",
     "posttest": "npm run lint",
-    "lint": "tslint -p src && tslint -p test && eslint bin/* \"test/**/*.js\" && npmPkgJsonLint ./package.json",
+    "lint": "tslint -p src && tslint -p test && npmPkgJsonLint ./package.json",
     "prepack": "node -e 'require(\"assert\")(!require(\"./package.json\").private)'",
     "self:pack": "npm run test && cd build/dist/ && (packname=`npm pack --silent`; mv $packname ..; echo $packname)",
     "prepublishOnly": "npm run pack-npjl",

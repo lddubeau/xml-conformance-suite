@@ -1,0 +1,7 @@
+{
+  "extends": "../../../tslint.json",
+  "rules": {
+    "chai-vague-errors": [false, "Useless."],
+    "no-unused-expression": [false, "Too many false positives."]
+  }
+}

@@ -10,7 +10,7 @@ describe("mocha", function mocha(): void {
   it("runs", done => {
     spawn("./node_modules/.bin/mocha",
           ["--delay",
-           "build/dist/frameworks/mocha/runners/basic.js",
+           "build/dist/runners/basic.js",
            "--grep=x-ibm-1-0.5-valid-P04-ibm04v01.xml",
            "--xml-driver=./drivers/sax",
            "--xml-selection=./selections/sax"])

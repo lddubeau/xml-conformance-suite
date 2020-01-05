@@ -1,7 +1,7 @@
-This is a framework for running the [XML conformance
+This is the JavaScript infrastructure for running the [XML conformance
 suite](https://www.w3.org/XML/Test/) published by the W3C.
 
-In this package you'll find the framework for running the suite with JavaScript:
+In this package you'll find:
 
 * ``drivers`` which contains drivers for various XML parsers. The role of a
   driver is to pass the test data to a parser, run the parser and return the
@@ -9,72 +9,20 @@ In this package you'll find the framework for running the suite with JavaScript:
 
 * ``selections`` which contains... er... selections. A selection is a module
   which exports a ``Selection`` class which determines how the suite is to deal
-  with a test.
+  with each test: run it, skip it, expect it to pass, expect it to fail, etc.
 
-* ``frameworks`` which has one subdirectory per test framework for which this
-  suite provides examples of how you can use the suite. (Yes, the word
-  "framework" does double duty: this package *as a whole* is a framework for
-  running the suite with JavaScript. It contains a ``frameworks`` directory that
-  covers different *test frameworks* (Mocha, Karma, etc.).)
-
-* ``lib`` which contains libraries to be used by the drivers, selections and
-  frameworks.
+* ``lib`` which contains libraries to be used by the drivers and selections.
 
 Using the Suite
 ===============
 
-There are two broad options to run the conformance suite:
+This library provides you with infrastructure, which is fine if you want to use
+the infrastructure directly.
 
-1. Execute a runner from under ``runners``. This is generally appropriate when
-you want to just run XML tests in isolation from other kinds of test, and may be
-helpful when you are setting up or testing your XML test suite
-configuration. The runner will load the driver you specify and use the selection
-of tests you specify and will just run these tests.
-
-2. Build a series of tests by using a builder under ``builders``. The builders
-export a ``build`` function which allows you to incorporate the conformance
-tests as part of larger suite.
-
-In all cases you must specify:
-
-1. How to run the code under test and determine whether the test was successful
-or not. You do this by specifying a "driver".
-
-2. How to dertermine which test to run and which to skip. You do this by
-specifying a "selection".
-
-Using A Runner
-==============
-
-You need to disclose the runner to the test framework it is made for and specify
-the driver and selection on the command line. By convention the driver is
-specified using the argument ``--xml-driver`` and the selection using the
-argument ``--xml-selection``.
-
-For instance, if you want to use the Mocha runner with the `xmllint` driver and
-the `xmllint` selection:
-
-```terminal
-$ mocha --delay ./frameworks/mocha/runners/basic.js \
-  --xml-driver=./drivers/xmllint \
-  --xml-selection=./selections/xmllint
-```
-
-By convention, the paths for the driver and selection must be relative to the
-installed code tree of this project. The path to the runner needs to be
-appropriate to how you invoke your test framework. If you run ``mocha`` you must
-give it the path where it can find the runner in the same way you would if you
-asked it to run any other test file.
-
-Similarly, you can run the suite on Chrome with the Karma runner like this:
-
-```terminal
-$ karma start ./frameworks/karma/karma.mocha.conf.js \
-  --browsers=ChromeHeadless \
-  --single-run \
-  --xml-driver=./drivers/dom-parser \
-  --xml-selection=./selections/chrome
-```
+If you want to integrate the conformance suite to an existing test suite for
+your application, you may instead use one of the packages that provide builders
+and runners, or otherwise interfaces to your test framework of choice:
+``@xml-conformance-suite/mocha``, ``@xml-conformance-suite/karma``.
 
 Selections
 ==========

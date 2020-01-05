@@ -14,10 +14,10 @@ import fs from "fs";
 
 import minimist from "minimist";
 
-import buildInfo from "../../../build-info";
-import { loadModules } from "../../../lib/module-loader";
-import { ResourceLoader } from "../../../lib/resource-loader";
-import { loadTests } from "../../../lib/test-parser";
+import { loadModules } from "@xml-conformance-suite/js/lib/module-loader";
+import { ResourceLoader } from "@xml-conformance-suite/js/lib/resource-loader";
+import { loadTests } from "@xml-conformance-suite/js/lib/test-parser";
+import buildInfo from "../build-info";
 import { build } from "../builders/basic";
 import { BasicResults } from "./basic-results";
 

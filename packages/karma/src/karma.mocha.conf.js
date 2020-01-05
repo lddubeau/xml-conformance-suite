@@ -7,6 +7,11 @@ const path = require("path");
 const testData =
       path.dirname(require.resolve(
         "@xml-conformance-suite/test-data/package.json"));
+const js =
+      path.dirname(require.resolve("@xml-conformance-suite/js/package.json"));
+const mocha =
+      path.dirname(require.resolve(
+        "@xml-conformance-suite/mocha/package.json"));
 
 // Work around the lack of matchAll on old Node versions.
 function matchAll(resolved, pattern) {
@@ -28,10 +33,12 @@ const systemJSConfig = {
   baseURL: "/base",
   pluginFirst: true,
   paths: {
+    "@xml-conformance-suite/test-data": `/absolute${testData}`,
+    "@xml-conformance-suite/js": `/absolute${js}`,
+    "@xml-conformance-suite/mocha": `/absolute${mocha}`,
   },
   map: {
-    path: "lib/browser-path",
-    "@xml-conformance-suite/test-data": `/absolute${testData}`,
+    path: "@xml-conformance-suite/js/lib/browser-path",
   },
   packages: {
     // We use this to specify a default extension of ".js". Yep, this is enough
@@ -86,7 +93,7 @@ module.exports = function configure(config) {
   }
 
   config.set({
-    basePath: "../../",
+    basePath: ".",
     frameworks: ["mocha", "chai"],
     middleware: ["serve-static-map"],
     serveStaticMap,
@@ -99,10 +106,12 @@ module.exports = function configure(config) {
     },
     files: [
       require.resolve("systemjs/dist/system"),
-      "frameworks/karma/karma.mocha.main.js",
+      "karma.mocha.main.js",
       { pattern: "**/*.js", included: false },
       { pattern: `${testData}/cleaned/**/*`, included: false },
       { pattern: `${testData}/xmlconf/**/*`, included: false },
+      { pattern: `${mocha}/**/*`, included: false },
+      { pattern: `${js}/**/*`, included: false },
     ],
     exclude: [
     ],
