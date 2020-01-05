@@ -1,5 +1,5 @@
-import { DriverSpec } from "../../../drivers/driver-spec";
-import { SerializedTest } from "../../../lib/serialized-test";
+import { DriverSpec } from "@xml-conformance-suite/js/drivers/driver-spec";
+import { SerializedTest } from "@xml-conformance-suite/js/lib/serialized-test";
 
 /**
  * A single test result.

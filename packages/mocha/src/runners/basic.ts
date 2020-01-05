@@ -13,9 +13,9 @@
  */
 import minimist from "minimist";
 
-import { loadModules } from "../../../lib/module-loader";
-import { ResourceLoader } from "../../../lib/resource-loader";
-import { loadTests } from "../../../lib/test-parser";
+import { loadModules } from "@xml-conformance-suite/js/lib/module-loader";
+import { ResourceLoader } from "@xml-conformance-suite/js/lib/resource-loader";
+import { loadTests } from "@xml-conformance-suite/js/lib/test-parser";
 import { build } from "../builders/basic";
 
 const argv = minimist(process.argv);

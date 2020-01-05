@@ -1,8 +1,8 @@
-import { Driver, DriverCtor } from "../../../drivers/driver";
-import { ResourceLoader } from "../../../lib/resource-loader";
-import { Suite, Test } from "../../../lib/test-suite";
+import { Driver, DriverCtor } from "@xml-conformance-suite/js/drivers/driver";
+import { ResourceLoader } from "@xml-conformance-suite/js/lib/resource-loader";
+import { Suite, Test } from "@xml-conformance-suite/js/lib/test-suite";
 import { Selection, SelectionCtor,
-         TestHandling } from "../../../selections/selection";
+         TestHandling } from "@xml-conformance-suite/js/selections/selection";
 
 type TestInfo = { handling: TestHandling, test: Test };
 type SuiteInfo = { title: string, children: (SuiteInfo|TestInfo)[] };

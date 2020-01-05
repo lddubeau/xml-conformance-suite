@@ -60,8 +60,6 @@
     "link-parent-bin": "link-parent-bin",
     "build": "link-parent-bin && monist run --serial --local-deps=install build",
     "test": "link-parent-bin && monist run --serial --local-deps=install test",
-    "posttest": "npm run lint",
-    "lint": "link-parent-bin && npmPkgJsonLint ./package.json && monist run --serial --local-deps=install lint",
     "preversion": "link-parent-bin && monist npm --serial version $npm_package_version",
     "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md",
     "self:pack": "link-parent-bin && monist run --serial --local-deps=install self:pack",
