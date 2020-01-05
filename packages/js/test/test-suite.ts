@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
-import { ResourceLoader } from "../build/dist/lib/resource-loader";
-import { Element, Suite, Test } from "../build/dist/lib/test-suite";
+import { ResourceLoader } from "../build/dist/resource-loader";
+import { Element, Suite, Test } from "../build/dist/test-suite";
 
 function makeTest(attributes: Record<string, string> = Object.create(null)):
 Test {

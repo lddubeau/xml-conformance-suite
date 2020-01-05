@@ -15,8 +15,8 @@
     .then(function loaded(minimist) {
       var args = minimist(window.__karma__.config.args);
       return Promise.all(["@xml-conformance-suite/mocha/builders/basic",
-                          "@xml-conformance-suite/js/lib/browser-resource-loader",
-                          "@xml-conformance-suite/js/lib/test-parser",
+                          "@xml-conformance-suite/js/browser-resource-loader",
+                          "@xml-conformance-suite/js/test-parser",
                           args["xml-driver"],
                           args["xml-selection"]].map(importIt));
     })

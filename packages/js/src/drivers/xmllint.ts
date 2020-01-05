@@ -9,8 +9,8 @@
 
 import { spawn } from "child_process";
 
-import { Test } from "../lib/test-suite";
-import { TestHandling } from "../selections/selection";
+import { TestHandling } from "../selection";
+import { Test } from "../test-suite";
 import { BaseDriver } from "./base";
 
 /**

@@ -3,9 +3,9 @@
  * AT ANY POINT.
  */
 
-import { TestSpec } from "../lib/test-spec";
+import { TestHandling } from "../selection";
+import { TestSpec } from "../test-spec";
 import { BaseSelection } from "./base";
-import { TestHandling } from "./selection";
 
 const EXCLUDED_PRODUCTIONS = [
   // Productions having to do with DTD parsing.

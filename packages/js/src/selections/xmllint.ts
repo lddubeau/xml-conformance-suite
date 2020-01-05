@@ -39,9 +39,9 @@
  *
  * @copyright The contibutors of xml-conformance-suite.
  */
-import { TestSpec } from "../lib/test-spec";
+import { TestHandling } from "../selection";
+import { TestSpec } from "../test-spec";
 import { BaseSelection } from "./base";
-import { TestHandling } from "./selection";
 
 // xmllint does not seem to enforce the validation constraints that
 // ``standalone="yes"`` entails so it fails a bunch of tests that test for those

@@ -6,12 +6,12 @@
 
 import path from "path";
 
-import { DriverCtor } from "../drivers/driver";
-import { SelectionCtor } from "../selections/selection";
+import { DriverCtor } from "./driver";
+import { SelectionCtor } from "./selection";
 
 function requireModule(modulePath: string): any {
   // tslint:disable-next-line:non-literal-require
-  return require(path.resolve(__dirname, "..", modulePath));
+  return require(path.resolve(__dirname, modulePath));
 }
 
 /**

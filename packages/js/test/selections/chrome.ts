@@ -1,8 +1,8 @@
 import { expect } from "chai";
 
-import { DriverSpec } from "../../build/dist/drivers/driver-spec";
-import { TestSpec } from "../../build/dist/lib/test-spec";
+import { DriverSpec } from "../../build/dist/driver-spec";
 import { Selection } from "../../build/dist/selections/chrome";
+import { TestSpec } from "../../build/dist/test-spec";
 
 export function makeTests(): void {
   describe("#getTestHandling", () => {

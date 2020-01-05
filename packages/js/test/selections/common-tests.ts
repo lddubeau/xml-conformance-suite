@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
-import { TestSpec } from "../../build/dist/lib/test-spec";
-import { Selection, TestHandling } from "../../build/dist/selections/selection";
+import { Selection, TestHandling } from "../../build/dist/selection";
+import { TestSpec } from "../../build/dist/test-spec";
 
 export function makeTestHandlingByTypeTest(makeSelection: () => Selection,
                                            expectations:

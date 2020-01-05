@@ -4,11 +4,11 @@
  *
  * @copyright The contibutors of xml-conformance-suite.
  */
-import { ResourceLoader } from "../lib/resource-loader";
-import { Test } from "../lib/test-suite";
-import { TestHandling } from "../selections/selection";
 import { DriverSpec } from "./driver-spec";
+import { ResourceLoader } from "./resource-loader";
+import { TestHandling } from "./selection";
 import { SerializedDriver } from "./serialized-driver";
+import { Test } from "./test-suite";
 
 /**
  * All Driver constructors must implement this interface.

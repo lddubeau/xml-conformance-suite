@@ -4,10 +4,10 @@
  * @copyright The contibutors of xml-conformance-suite.
  */
 
-import { Test } from "../lib/test-suite";
-import { TestHandling } from "../selections/selection";
-import { Driver } from "./driver";
-import { SerializedDriver } from "./serialized-driver";
+import { Driver } from "../driver";
+import { TestHandling } from "../selection";
+import { SerializedDriver } from "../serialized-driver";
+import { Test } from "../test-suite";
 
 /**
  * A base driver which implements common functionality.

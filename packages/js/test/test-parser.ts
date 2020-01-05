@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
-import { ResourceLoader } from "../build/dist/lib/resource-loader";
-import { loadTests } from "../build/dist/lib/test-parser";
+import { ResourceLoader } from "../build/dist/resource-loader";
+import { loadTests } from "../build/dist/test-parser";
 
 describe("test-parser", () => {
   describe("loadTests", () => {

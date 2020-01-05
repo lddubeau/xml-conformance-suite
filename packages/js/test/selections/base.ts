@@ -2,11 +2,11 @@ import { expect } from "chai";
 
 import { makeTestHandlingByTypeTest } from "./common-tests";
 
-import { DriverSpec } from "../../build/dist/drivers/driver-spec";
-import { BAD_TESTS } from "../../build/dist/lib/test-errata";
-import { TestSpec } from "../../build/dist/lib/test-spec";
+import { DriverSpec } from "../../build/dist/driver-spec";
+import { Selection, TestHandling } from "../../build/dist/selection";
 import { BaseSelection } from "../../build/dist/selections/base";
-import { Selection, TestHandling } from "../../build/dist/selections/selection";
+import { BAD_TESTS } from "../../build/dist/test-errata";
+import { TestSpec } from "../../build/dist/test-spec";
 
 // tslint:disable-next-line:max-func-body-length
 export function makeTests(): void {

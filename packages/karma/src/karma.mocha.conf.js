@@ -38,7 +38,7 @@ const systemJSConfig = {
     "@xml-conformance-suite/mocha": `/absolute${mocha}`,
   },
   map: {
-    path: "@xml-conformance-suite/js/lib/browser-path",
+    path: "@xml-conformance-suite/js/browser-path",
   },
   packages: {
     // We use this to specify a default extension of ".js". Yep, this is enough
