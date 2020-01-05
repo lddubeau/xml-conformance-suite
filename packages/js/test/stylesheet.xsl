@@ -11,14 +11,9 @@
     <xsl:apply-templates select="*|@*"/>
   </xsl:template>
 
-  <xsl:template match="//TEST/@VERSION">
-    <xsl:text>VERSION: </xsl:text>
-    <xsl:value-of select="."/>
-    <xsl:text>&#10;</xsl:text>
-  </xsl:template>
-
-  <xsl:template match="//TEST/@TYPE">
-    <xsl:text>TYPE: </xsl:text>
+  <xsl:template match="//TEST/@VERSION | //TEST/@TYPE | //TEST/@RECOMMENDATION">
+    <xsl:value-of select="name()"/>
+    <xsl:text>: </xsl:text>
     <xsl:value-of select="."/>
     <xsl:text>&#10;</xsl:text>
   </xsl:template>

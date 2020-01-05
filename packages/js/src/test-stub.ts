@@ -1,5 +1,6 @@
 import { SerializedTest } from "./serialized-test";
-import { TestSpec, TestType } from "./test-spec";
+import { TestRecommendation, TestSpec, TestType,
+         TestVersion } from "./test-spec";
 
 /**
  * A test stub is an object that implements TestSpecification but is not a
@@ -9,8 +10,8 @@ import { TestSpec, TestType } from "./test-spec";
 export class TestStub implements TestSpec {
   id!: string;
   testType!: TestType;
-  version!: string | undefined;
-  recommendation!: string;
+  version!: TestVersion;
+  recommendation!: TestRecommendation;
   editions!: string[] | undefined;
   sections!: string[];
   productions!: string[];
