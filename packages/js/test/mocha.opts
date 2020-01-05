@@ -1,4 +1,0 @@
---require source-map-support/register
---require test/tshook.js
-test/**/*.ts
-test/**/*.js
