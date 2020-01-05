@@ -2,10 +2,10 @@ import { expect } from "chai";
 
 import { makeTestHandlingByTypeTest } from "./common-tests";
 
-import { DriverSpec } from "../../build/dist/drivers/driver-spec";
-import { TestSpec } from "../../build/dist/lib/test-spec";
+import { DriverSpec } from "../../build/dist/driver-spec";
+import { TestHandling } from "../../build/dist/selection";
 import { Selection } from "../../build/dist/selections/sax";
-import { TestHandling } from "../../build/dist/selections/selection";
+import { TestSpec } from "../../build/dist/test-spec";
 
 export function makeTests(): void {
   const expectations: Record<string, TestHandling> = {

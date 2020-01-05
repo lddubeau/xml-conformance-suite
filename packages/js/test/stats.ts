@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
 import { addToFrequencyMaps, Atom, IndexedFrequencyMaps,
-         makeFrequencyMap } from "../build/dist/lib/stats";
+         makeFrequencyMap } from "../build/dist/stats";
 
 describe("stats", () => {
 

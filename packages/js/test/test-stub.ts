@@ -1,8 +1,8 @@
 import { expect } from "chai";
 
-import { SerializedTest } from "../build/dist/lib/serialized-test";
-import { TestStub } from "../build/dist/lib/test-stub";
-import { Test } from "../build/dist/lib/test-suite";
+import { SerializedTest } from "../build/dist/serialized-test";
+import { TestStub } from "../build/dist/test-stub";
+import { Test } from "../build/dist/test-suite";
 
 describe("TestStub", () => {
   describe("Test", () => {

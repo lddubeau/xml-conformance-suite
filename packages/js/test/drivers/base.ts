@@ -1,8 +1,8 @@
 import { expect } from "chai";
 
 import { BaseDriver } from "../../build/dist/drivers/base";
-import { Test } from "../../build/dist/lib/test-suite";
-import { TestHandling } from "../../build/dist/selections/selection";
+import { TestHandling } from "../../build/dist/selection";
+import { Test } from "../../build/dist/test-suite";
 
 // tslint:disable-next-line:class-name
 class BaseDriver_ extends BaseDriver {

@@ -10,9 +10,9 @@ const testData =
       path.dirname(require.resolve(
         "@xml-conformance-suite/test-data/package.json"));
 
-import { ResourceLoader } from "../lib/resource-loader";
-import { TestParser } from "../lib/test-parser";
-import { isTest, Suite, Test } from "../lib/test-suite";
+import { ResourceLoader } from "../resource-loader";
+import { TestParser } from "../test-parser";
+import { isTest, Suite, Test } from "../test-suite";
 
 function loadTests(resourceLoader: ResourceLoader): Suite {
   const testParser = new TestParser(path.join(testData, "xmlconf"),

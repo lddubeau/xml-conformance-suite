@@ -4,8 +4,8 @@
  *
  * This selector is meant to select only those tests that Chrome passes.
  */
-import { TestSpec } from "../lib/test-spec";
-import { TestHandling } from "./selection";
+import { TestHandling } from "../selection";
+import { TestSpec } from "../test-spec";
 import { Selection as WhatwgSelection } from "./whatwg";
 
 //

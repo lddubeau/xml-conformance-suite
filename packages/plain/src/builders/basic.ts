@@ -1,11 +1,11 @@
 /**
  * A mocha builder that builds the tests asynchronously.
  */
-import { Driver, DriverCtor } from "@xml-conformance-suite/js/drivers/driver";
-import { ResourceLoader } from "@xml-conformance-suite/js/lib/resource-loader";
-import { isTest, Suite, Test } from "@xml-conformance-suite/js/lib/test-suite";
+import { Driver, DriverCtor } from "@xml-conformance-suite/js/driver";
+import { ResourceLoader } from "@xml-conformance-suite/js/resource-loader";
 import { Selection,
-         SelectionCtor } from "@xml-conformance-suite/js/selections/selection";
+         SelectionCtor } from "@xml-conformance-suite/js/selection";
+import { isTest, Suite, Test } from "@xml-conformance-suite/js/test-suite";
 
 export interface TestRun {
   test: Test;

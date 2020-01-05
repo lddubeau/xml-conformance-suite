@@ -1,10 +1,10 @@
 /**
  * A selection is responsible for deciding how to handle the tests in the suite.
  */
-import { DriverSpec } from "../drivers/driver-spec";
-import { BAD_TESTS } from "../lib/test-errata";
-import { TestSpec } from "../lib/test-spec";
-import { Selection, TestHandling } from "./selection";
+import { DriverSpec } from "../driver-spec";
+import { Selection, TestHandling } from "../selection";
+import { BAD_TESTS } from "../test-errata";
+import { TestSpec } from "../test-spec";
 
 /**
  * A default implementation for selections.

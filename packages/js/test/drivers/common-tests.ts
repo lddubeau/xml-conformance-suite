@@ -3,8 +3,8 @@ import * as chai from "chai";
 
 import { expectRejection, use as erUse } from "expect-rejection";
 
-import { Driver } from "../../build/dist/drivers/driver";
-import { Test } from "../../build/dist/lib/test-suite";
+import { Driver } from "../../build/dist/driver";
+import { Test } from "../../build/dist/test-suite";
 
 erUse(chai);
 

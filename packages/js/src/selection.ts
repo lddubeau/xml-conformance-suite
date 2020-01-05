@@ -1,5 +1,5 @@
-import { DriverSpec } from "../drivers/driver-spec";
-import { TestSpec } from "../lib/test-spec";
+import { DriverSpec } from "./driver-spec";
+import { TestSpec } from "./test-spec";
 
 export type SelectionCtor = new (driver: DriverSpec) => Selection;
 

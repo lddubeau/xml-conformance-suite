@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import fs from "fs";
 
-import { ResourceLoader } from "../build/dist/lib/resource-loader";
+import { ResourceLoader } from "../build/dist/resource-loader";
 
 describe("ResourceLoader", () => {
   let rl: ResourceLoader;

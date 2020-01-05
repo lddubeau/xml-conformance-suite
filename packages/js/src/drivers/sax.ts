@@ -4,9 +4,9 @@
  */
 import sax from "sax";
 
-import { ResourceLoader } from "../lib/resource-loader";
-import { Test } from "../lib/test-suite";
-import { TestHandling } from "../selections/selection";
+import { ResourceLoader } from "../resource-loader";
+import { TestHandling } from "../selection";
+import { Test } from "../test-suite";
 import { BaseDriver } from "./base";
 
 export class Driver extends BaseDriver {
