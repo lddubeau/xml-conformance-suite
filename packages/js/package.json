@@ -1,6 +1,6 @@
 {
   "name": "@xml-conformance-suite/js",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "private": true,
   "description": "A conformance suite for tools that parse XML.",
   "keywords": [
@@ -20,7 +20,7 @@
   "author": "Louis-Dominique Dubeau <ldd@lddubeau.com>",
   "license": "MIT AND W3C-19980720",
   "dependencies": {
-    "@xml-conformance-suite/test-data": "^1.2.0",
+    "@xml-conformance-suite/test-data": "2.0.0",
     "argparse": "^1.0.10",
     "chai": "^4.2.0",
     "minimist": "^1.2.0",
