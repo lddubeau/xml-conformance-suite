@@ -63,7 +63,7 @@
     "preversion": "link-parent-bin && monist npm --serial version $npm_package_version",
     "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md",
     "self:pack": "link-parent-bin && monist run --serial --local-deps=install self:pack",
-    "self:publish": "link-parent-bin && monist npm --serial self:publish",
+    "self:publish": "link-parent-bin && monist run --serial self:publish",
     "self:test-publish": "env npm_config_registry=http://localhost:4873 npm run self:publish",
     "postversion": "monist update-versions $npm_package_version && git add package.json package-lock.json packages/*/package.json && git commit -m'build: version bump' && git tag -a v$npm_package_version && npm run test && npm run self:publish",
     "postpublish": "git push origin --follow-tags",
