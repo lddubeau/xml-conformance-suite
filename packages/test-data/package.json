@@ -31,7 +31,7 @@
     "lint": "npmPkgJsonLint ./package.json",
     "prepack": "node -e 'require(\"assert\")(!require(\"./package.json\").private)'",
     "self:pack": "npm run test && cd build/dist/ && (packname=`npm pack --silent`; mv $packname ..; echo $packname)",
-    "self:publish": "npm publish",
+    "self:publish": "cd build/dist && npm publish",
     "distclean": "npm run clean"
   }
 }
