@@ -37,7 +37,6 @@
     "lint": "tslint -p src && tslint -p test && npmPkgJsonLint ./package.json",
     "prepack": "node -e 'require(\"assert\")(!require(\"./package.json\").private)'",
     "self:pack": "npm run test && cd build/dist/ && (packname=`npm pack --silent`; mv $packname ..; echo $packname)",
-    "prepublishOnly": "npm run pack-npjl",
     "self:publish": "cd build/dist && npm publish",
     "clean": "rm -rf build",
     "distclean": "rm -rf node_modules && npm run clean"
