@@ -40,7 +40,6 @@
     "self:pack": "npm run test && cd build/dist/ && (packname=`npm pack --silent`; mv $packname ..; echo $packname)",
     "prepublishOnly": "npm run pack-npjl",
     "self:publish": "cd build/dist && npm publish",
-    "version": "versync -b sync -a",
     "clean": "rm -rf build",
     "distclean": "rm -rf node_modules && npm run clean"
   }
