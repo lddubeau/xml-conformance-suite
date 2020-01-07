@@ -30,35 +30,41 @@ process.on("uncaughtException", (ex) => {
 //
 
 const { execFile } = require("child_process");
-const semver = require("semver");
 
 execFile("git", ["status", "--porcelain"], (error, status) => {
   if (error) {
     throw error;
   }
 
-  execFile("git", ["describe", "--match", "v*"], (descError, desc) => {
-    if (descError) {
-      throw descError;
-    }
+  //
+  // The describe command here uses --always. We are using this because when
+  // running the test suite on Travis the git clone is shallow and has no tags.
+  // So the describe command without --always fails. We could disable depth so
+  // that the clone is complete but that seems wasteful.
+  //
+  // Right now we do not do releases through Travis so releases will always have
+  // the benefit of a tag. If we do releases from Travis one day, then we can
+  // set depth to something sensible if the default is not enough.
+  //
+  // Upshot: the build info is not the place from which to get a version number.
+  //
+  execFile("git", ["describe", "--match", "v*", "--always"],
+           (descError, desc) => {
+             if (descError) {
+               throw descError;
+             }
 
-    desc = desc.trim();
+             desc = desc.trim();
 
-    const sepIx = desc.indexOf("-");
-    const version = sepIx !== -1 ? desc.slice(1, sepIx) : desc;
-    if (!semver.valid(version)) {
-      throw new Fatal(`invalid version: ${version}`);
-    }
+             if (status.length !== 0) {
+               desc += "-unclean";
+             }
 
-    if (status.length !== 0) {
-      desc += "-unclean";
-    }
-
-    console.log(`\
+             console.log(`\
 module.exports = {
   desc: "${desc}",
   date: "${new Date().toISOString()}",
 };
 `);
-  });
+           });
 });
