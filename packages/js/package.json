@@ -23,7 +23,7 @@
     "@xml-conformance-suite/test-data": "2.0.0",
     "argparse": "^1.0.10",
     "chai": "^4.2.0",
-    "minimist": "^1.2.0",
+    "minimist": "^1.2.4",
     "mocha": "^7.0.1",
     "saxes": "^4.0.2"
   },
