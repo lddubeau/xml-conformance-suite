@@ -22,7 +22,7 @@
   "license": "MIT AND W3C-19980720",
   "dependencies": {
     "@xml-conformance-suite/js": "2.0.0",
-    "minimist": "^1.2.4"
+    "minimist": "^1.2.5"
   },
   "peerDependencies": {
     "mocha": "6.x || 7.x"
