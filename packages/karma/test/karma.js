@@ -8,8 +8,9 @@ const { expect } = require("chai");
 // to select one test out of the lot. All tests will be *built* but not all will
 // be *run*.
 describe("karma", function karma() {
+  // eslint-disable-next-line no-invalid-this
   this.timeout(20000);
-  it("runs", (done) => {
+  it("runs", done => {
     spawn("./node_modules/.bin/karma",
           ["start",
            "build/dist/karma.mocha.conf.js",
@@ -19,7 +20,7 @@ describe("karma", function karma() {
            "--xml-driver=@xml-conformance-suite/js/drivers/dom-parser",
            "--xml-selection=@xml-conformance-suite/js/selections/whatwg"],
           { stdio: "inherit" })
-      .on("exit", (code) => {
+      .on("exit", code => {
         try {
           expect(code).to.equal(0);
         }

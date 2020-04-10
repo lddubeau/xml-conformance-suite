@@ -14,6 +14,13 @@ module.exports = {
     files: [
       "src/karma.mocha.main.js",
     ],
+    env: {
+      node: false,
+      browser: true,
+    },
     extends: "eslint-config-lddubeau-base/es5.js",
+    rules: {
+      "prefer-arrow/prefer-arrow-functions": "off",
+    },
   }],
 };
