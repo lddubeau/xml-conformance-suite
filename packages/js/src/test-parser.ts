@@ -36,7 +36,7 @@ export class TestParser {
               private readonly resourceLoader: ResourceLoader) {
     const parser = this.parser = new SaxesParser({ position: false });
 
-    parser.onopentag = elementData => {
+    parser.on("opentag", elementData => {
       if (this.skip > 0) {
         this.skip++;
         return;
@@ -82,9 +82,9 @@ export class TestParser {
       }
 
       this.stack.unshift(el);
-    };
+    });
 
-    parser.onclosetag = () => {
+    parser.on("closetag", () => {
       if (this.skip > 0) {
         this.skip--;
         return;
@@ -94,11 +94,11 @@ export class TestParser {
         throw new Error("stack underflow");
       }
       this.stack.shift();
-    };
+    });
 
-    parser.onerror = err => {
+    parser.on("error", err => {
       throw err;
-    };
+    });
   }
 
   /**

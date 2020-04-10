@@ -51,7 +51,7 @@
     "npm-package-json-lint": "^4.6.0",
     "npm-package-json-lint-config-lddubeau": "^1.1.0",
     "sax": "^1.2.4",
-    "saxes": "^4.0.2",
+    "saxes": "^5.0.1",
     "serve-static": "^1.14.1",
     "source-map-support": "^0.5.16",
     "systemjs": "^0.21.6",
