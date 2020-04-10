@@ -7,15 +7,41 @@ import { Suite, Test } from "@xml-conformance-suite/js/test-suite";
 type TestInfo = { handling: TestHandling, test: Test };
 type SuiteInfo = { title: string, children: (SuiteInfo|TestInfo)[] };
 
+//
+// We used to use Promise.all calls that processed all children of a suite at
+// once, like this:
+//
+// return Promise.all((something.children ).map(handleTestCases));
+//
+// However, that became a problem because Chrome started giving out
+// net::ERR_INSUFFICIENT_RESOURCES because some selections need to open the test
+// files to determine whether the file needs to be included or not (e.g. BOM
+// checks), and there are too many test files. (There are circa 3600 test files
+// to open.)
+//
+// So now we break the list into smaller chunks. This is not a perfect
+// solution. A better one would be to queue the calls to getTestHandling and
+// have a limited number of pending calls. Maybe a future version will do this.
+//
+
+const CHUNK_SIZE = 100;
+
+function *chunkify<T>(arr: T[]): Iterable<T[]> {
+  for (let i = 0; i < arr.length; i += CHUNK_SIZE) {
+    yield arr.slice(i, CHUNK_SIZE);
+  }
+}
+
 /**
  * A mocha builder that builds the tests synchronously.
  */
-function convertSuite(suite: Suite,
-                      // @ts-ignore
-                      resourceLoader: ResourceLoader,
-                      // @ts-ignore
-                      driver: Driver,
-                      selection: Selection): Promise<(SuiteInfo | TestInfo)[]> {
+async function convertSuite(suite: Suite,
+                            // @ts-ignore
+                            resourceLoader: ResourceLoader,
+                            // @ts-ignore
+                            driver: Driver,
+                            selection: Selection):
+Promise<(SuiteInfo | TestInfo)[]> {
   async function handleTest(test: Test): Promise<TestInfo> {
     const handling = await selection.getTestHandling(test);
     return { handling, test };
@@ -23,23 +49,31 @@ function convertSuite(suite: Suite,
 
   async function handleTestCases(testCases: Suite):
   Promise<SuiteInfo | TestInfo> {
-    const children = await Promise.all(testCases.children.map(child => {
-      switch (child.name) {
-        case "TESTCASES":
-          return handleTestCases(child as Suite);
-        case "TEST":
-          return handleTest(child as Test);
-        default:
-          throw new Error(`unexpected child name: ${child.name}`);
-      }
-    }));
-
-    return { title: testCases.attributes.PROFILE ??
-             testCases.attributes["xml:base"],
-             children };
+    const children: (SuiteInfo | TestInfo)[] = [];
+    for (const chunk of chunkify(testCases.children)) {
+      children.push(...await Promise.all(chunk.map(child => {
+        switch (child.name) {
+          case "TESTCASES":
+            return handleTestCases(child as Suite);
+          case "TEST":
+            return handleTest(child as Test);
+          default:
+            throw new Error(`unexpected child name: ${child.name}`);
+        }
+      })));
+    }
+    return {
+      title: testCases.attributes.PROFILE ?? testCases.attributes["xml:base"],
+      children,
+    };
   }
 
-  return Promise.all((suite.children as Suite[]).map(handleTestCases));
+  const ret: (SuiteInfo | TestInfo)[] = [];
+  for (const chunk of chunkify(suite.children as Suite[])) {
+    ret.push(...await Promise.all(chunk.map(handleTestCases)));
+  }
+
+  return ret;
 }
 
 /**
