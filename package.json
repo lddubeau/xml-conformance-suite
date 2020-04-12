@@ -48,7 +48,7 @@
     "minimist": "^1.2.5",
     "mocha": "^7.1.1",
     "monist": "^1.7.0",
-    "npm-package-json-lint": "^4.6.0",
+    "npm-package-json-lint": "^5.0.0",
     "npm-package-json-lint-config-lddubeau": "^1.1.0",
     "sax": "^1.2.4",
     "saxes": "^5.0.1",
