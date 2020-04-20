@@ -55,7 +55,7 @@
     "serve-static": "^1.14.1",
     "source-map-support": "^0.5.17",
     "systemjs": "^0.21.6",
-    "ts-node": "^8.8.2",
+    "ts-node": "^8.9.0",
     "tslint": "^6.1.1",
     "tslint-config-lddubeau": "^4.1.2",
     "typescript": "^3.8.3"
