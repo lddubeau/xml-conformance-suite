@@ -58,7 +58,7 @@
     "ts-node": "^8.10.1",
     "tslint": "^6.1.2",
     "tslint-config-lddubeau": "^4.1.2",
-    "typescript": "^3.8.3"
+    "typescript": "^3.9.2"
   },
   "scripts": {
     "link-parent-bin": "link-parent-bin",
