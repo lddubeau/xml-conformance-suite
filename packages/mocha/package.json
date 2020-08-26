@@ -25,7 +25,7 @@
     "minimist": "^1.2.5"
   },
   "peerDependencies": {
-    "mocha": "6.x || 7.x"
+    "mocha": "6.x || 7.x || 8.x"
   },
   "scripts": {
     "tsc": "tsc -p src",
