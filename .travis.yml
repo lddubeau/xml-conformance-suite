@@ -2,8 +2,8 @@ dist: trusty
 language: node_js
 node_js:
   - node
+  - 12
   - 10
-  - 8
 before_install:
 - sudo apt-get update -qq
 - sudo apt-get install -y xsltproc libxml2-utils
