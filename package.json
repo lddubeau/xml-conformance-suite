@@ -23,7 +23,7 @@
     "@commitlint/cli": "^9.1.2",
     "@commitlint/config-angular": "^9.1.2",
     "@types/argparse": "^1.0.38",
-    "@types/chai": "^4.2.12",
+    "@types/chai": "^4.2.13",
     "@types/mocha": "^8.0.3",
     "@types/sax": "^1.2.1",
     "argparse": "^2.0.0",
