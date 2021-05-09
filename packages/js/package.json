@@ -22,7 +22,7 @@
   "dependencies": {
     "@xml-conformance-suite/test-data": "2.0.0",
     "argparse": "^2.0.0",
-    "chai": "^4.2.0",
+    "chai": "^4.3.4",
     "minimist": "^1.2.5",
     "mocha": "^8.2.0",
     "saxes": "^5.0.1"
