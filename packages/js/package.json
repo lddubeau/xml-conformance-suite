@@ -21,7 +21,7 @@
   "license": "MIT AND W3C-19980720",
   "dependencies": {
     "@xml-conformance-suite/test-data": "2.0.0",
-    "argparse": "^2.0.0",
+    "argparse": "^2.0.1",
     "chai": "^4.2.0",
     "minimist": "^1.2.5",
     "mocha": "^8.2.0",
