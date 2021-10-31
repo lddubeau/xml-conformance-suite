@@ -25,7 +25,7 @@ function loadTests(resourceLoader: ResourceLoader): Suite {
 }
 
 const parser = new argparse.ArgumentParser({
-  addHelp: true,
+  add_help: true,
   description: "Search through the test suite.",
 });
 
@@ -185,88 +185,88 @@ function valuesCommand(subargs: Record<string, any>): void {
   }
 }
 
-const subparsers = parser.addSubparsers({
+const subparsers = parser.add_subparsers({
   title: "subcommands",
   dest: "subcommand",
 });
 
-const grepXML = subparsers.addParser("grep-xml", {
+const grepXML = subparsers.add_parser("grep-xml", {
   description: "Run grep on the XML of the test files. All parameters you pass \
 are passed on to grep.",
   help: "Run grep on the XML of the test files.",
 });
 
-grepXML.setDefaults({ func: grepCommand });
+grepXML.set_defaults({ func: grepCommand });
 
-const select = subparsers.addParser("select", {
+const select = subparsers.add_parser("select", {
   description: "Select tests by XPath expression.",
   help: "Select tests by XPath expression.",
 });
 
-select.addArgument("expr", {
+select.add_argument("expr", {
   help: "An XPath 1.0 expression.",
 });
 
-select.setDefaults({ func: selectCommand });
+select.set_defaults({ func: selectCommand });
 
-const findBOM = subparsers.addParser("find-bom", {
+const findBOM = subparsers.add_parser("find-bom", {
   description: "Select tests that have a BOM in their main file.",
   help: "Select tests that have a BOM in their main file.",
 });
 
-findBOM.setDefaults({ func: findBOMCommand });
+findBOM.set_defaults({ func: findBOMCommand });
 
-findBOM.addArgument(["-m", "--method"], {
+findBOM.add_argument("-m", "--method", {
   action: "store",
   choices: ["get-has-bom", "bytes"],
-  defaultValue: "get-has-bom",
+  default: "get-has-bom",
   help: "Select a method for checking the presence of the BOM. ``get-has-bom`` \
 uses the ``getHasBOM`` method of ``Test`` elements. ``bytes`` reads the XML in \
 binary mode. Default: ``%(defaultValue)s``.",
 });
 
-const cat = subparsers.addParser("dump", {
+const cat = subparsers.add_parser("dump", {
   description: "Dump a test to the screen.",
   help: "Dump a test to the screen.",
 });
 
-cat.setDefaults({ func: catCommand });
+cat.set_defaults({ func: catCommand });
 
-cat.addArgument("id", {
+cat.add_argument("id", {
   action: "store",
   help: "The id of the test.",
 });
 
-cat.addArgument(["-a", "--aspect"], {
+cat.add_argument("-a", "--aspect", {
   action: "store",
   choices: ["definition", "file"],
-  defaultValue: "definition",
+  default: "definition",
   help: "Select which aspect of the test to dump. ``definition`` selects the \
 test definition. ``file`` selects the test file.",
 });
 
-const values = subparsers.addParser("values", {
+const values = subparsers.add_parser("values", {
   description: "Dump the set of possible values for some properties of tests.",
   help: "Dump the set of possible values for some properties of tests.",
 });
 
-values.setDefaults({ func: valuesCommand });
+values.set_defaults({ func: valuesCommand });
 
-values.addArgument("name", {
+values.add_argument("name", {
   action: "store",
   help: "The name of the property to get.",
 });
 
-values.addArgument(["-a", "--attribute"], {
+values.add_argument("-a", "--attribute", {
   action: "storeTrue",
-  defaultValue: false,
+  default: false,
   help: "Whether to get the raw attribute value prior to any processing.",
 });
 
 // Patch argparse so that parseKnownArgs works with subparsers.
-argparse.ArgumentParser.prototype.parseArgs =
+argparse.ArgumentParser.prototype.parse_args =
   function parseArgs(...params: any[]): any {
-    const [namespace, extra] = this.parseKnownArgs(...params);
+    const [namespace, extra] = this.parse_known_args(...params);
     if (extra.length) {
       // We stuff the unrecognized parameters into an __extra field. Otherwise,
       // they are lost.
@@ -276,7 +276,7 @@ argparse.ArgumentParser.prototype.parseArgs =
     return namespace;
   };
 
-const [args] = parser.parseKnownArgs();
+const [args] = parser.parse_known_args();
 
 checkUnrecognized(args);
 
