@@ -44,7 +44,7 @@
     "karma-firefox-launcher": "^2.1.1",
     "karma-mocha": "^2.0.1",
     "karma-serve-static-map": "^2.0.0",
-    "link-parent-bin": "^1.0.2",
+    "link-parent-bin": "^2.0.0",
     "minimist": "^1.2.5",
     "mocha": "^8.2.0",
     "monist": "^1.7.0",
