@@ -24,7 +24,7 @@
     "argparse": "^2.0.1",
     "chai": "^4.2.0",
     "minimist": "^1.2.5",
-    "mocha": "^8.2.0",
+    "mocha": "^8.4.0",
     "saxes": "^5.0.1"
   },
   "scripts": {
