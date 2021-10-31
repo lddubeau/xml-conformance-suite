@@ -3,5 +3,5 @@
 "use strict";
 
 // This is not unresolved once we compile.
-// eslint-disable-next-line import/no-unresolved
+// eslint-disable-next-line import/no-unresolved, import/extensions
 require("../src/cli/search-tests");
