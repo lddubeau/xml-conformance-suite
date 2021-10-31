@@ -18,7 +18,7 @@ export class Driver extends BaseDriver {
     try {
       doc = parser.parseFromString(source, "text/xml");
     }
-    catch (ex) {
+    catch (ex: any) {
       // On IE10/11 bad source will cause a SyntaxError.
       if (ex.name !== "SyntaxError" || ex.code !== 12) {
         throw ex;
