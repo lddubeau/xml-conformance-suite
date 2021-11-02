@@ -11,7 +11,8 @@ import { SelectionCtor } from "./selection";
 
 function requireModule(modulePath: string): any {
   // tslint:disable-next-line:non-literal-require
-  return require(path.resolve(__dirname, modulePath));
+  return require(modulePath[0] !== "@" ? path.resolve(__dirname, modulePath) :
+    modulePath);
 }
 
 /**
