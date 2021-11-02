@@ -6,10 +6,13 @@ describe("plain", function plain(): void {
   this.timeout(5000);
   it("runs", done => {
     spawn("node",
-          ["./build/dist/runners/basic.js",
+          ["--preserve-symlinks",
+           "./build/dist/runners/basic.js",
            "--name=foo",
-           "--xml-driver=@xml-conformance-test/js/drivers/perfect",
-           "--xml-selection=@xml-conformance-test/js/selections/sax"])
+           "--xml-driver=@xml-conformance-suite/js/drivers/perfect",
+           "--xml-selection=@xml-conformance-suite/js/selections/sax"], {
+             stdio: "ignore",
+           })
       .on("exit", code => {
         try {
           expect(code).to.equal(0);
