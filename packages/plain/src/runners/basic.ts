@@ -11,6 +11,7 @@
  * @copyright The contibutors of xml-conformance-suite.
  */
 import fs from "fs";
+import process from "process";
 
 import minimist from "minimist";
 
@@ -70,5 +71,12 @@ export async function main(): Promise<void> {
 }
 
 if (require.main === module) {
+  process.on("unhandledRejection", (reject: {} | null | undefined) => {
+    if (reject) {
+      // tslint:disable-next-line:no-console
+      console.error((reject as any).stack);
+    }
+    process.exit(1);
+  });
   main();
 }
