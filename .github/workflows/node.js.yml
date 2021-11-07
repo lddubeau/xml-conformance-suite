@@ -18,6 +18,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+    - run: npm install -g npm
     - run: sudo apt-get update -qq
     - run: sudo apt-get install -y xsltproc libxml2-utils
     - run: npm ci
