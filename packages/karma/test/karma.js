@@ -11,7 +11,7 @@ describe("karma", function karma() {
   // eslint-disable-next-line no-invalid-this
   this.timeout(20000);
   it("runs", done => {
-    spawn("./node_modules/.bin/karma",
+    spawn("karma",
           ["start",
            "build/dist/karma.mocha.conf.js",
            "--single-run",

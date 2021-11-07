@@ -33,9 +33,9 @@ const systemJSConfig = {
   baseURL: "/base",
   pluginFirst: true,
   paths: {
-    "@xml-conformance-suite/test-data": `/absolute${testData}`,
-    "@xml-conformance-suite/js": `/absolute${js}`,
-    "@xml-conformance-suite/mocha": `/absolute${mocha}`,
+    "@xml-conformance-suite/test-data": `/absolute${testData}/build/dist`,
+    "@xml-conformance-suite/js": `/absolute${js}/build/dist`,
+    "@xml-conformance-suite/mocha": `/absolute${mocha}/build/dist`,
   },
   map: {
     path: "@xml-conformance-suite/js/browser-path",
@@ -108,8 +108,8 @@ module.exports = function configure(config) {
       require.resolve("systemjs/dist/system"),
       "karma.mocha.main.js",
       { pattern: "**/*.js", included: false },
-      { pattern: `${testData}/cleaned/**/*`, included: false },
-      { pattern: `${testData}/xmlconf/**/*`, included: false },
+      { pattern: `${testData}/build/dist/cleaned/**/*`, included: false },
+      { pattern: `${testData}/build/dist/xmlconf/**/*`, included: false },
       { pattern: `${mocha}/**/*`, included: false },
       { pattern: `${js}/**/*`, included: false },
     ],

@@ -8,7 +8,7 @@ import { expect } from "chai";
 describe("mocha", function mocha(): void {
   this.timeout(5000);
   it("runs", done => {
-    spawn("./node_modules/.bin/mocha",
+    spawn("mocha",
           ["--delay",
            "build/dist/runners/basic.js",
            "--grep=x-ibm-1-0.5-valid-P04-ibm04v01.xml",

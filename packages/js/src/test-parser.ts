@@ -117,17 +117,14 @@ export class TestParser {
 
 export async function loadTests(resourceLoader: ResourceLoader):
 Promise<Suite> {
-  // We resolve the package.json because if we try resolving the package name by
-  // itself it may fail if ``main`` is not set in ``package.json``, and there's
-  // no point for ``main`` in this package. So resolve the file and then take
-  // the dirname.
-  const pkg =
-    path.dirname(
-      require.resolve("@xml-conformance-suite/test-data/package.json"));
-  const source =
-    await resourceLoader.loadFile(path.join(pkg, "cleaned",
-                                            "xmlconf-flattened.xml"));
-  const parser = new TestParser(path.join(pkg, "xmlconf"),
+  const pkg = "@xml-conformance-suite/test-data/";
+  // We remove the final .js because some loaders tack on the extension
+  // automatically.
+  const srcFile =
+    require.resolve(`${pkg}cleaned/xmlconf-flattened.xml`).replace(/.js$/, "");
+  const source = await resourceLoader.loadFile(srcFile);
+  const parser = new TestParser(path.join(path.dirname(path.dirname(srcFile)),
+                                          "xmlconf"),
                                 resourceLoader);
   parser.parse(source);
   return parser.top!;

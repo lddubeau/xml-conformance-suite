@@ -1,7 +1,6 @@
 {
   "name": "@xml-conformance-suite/plain",
   "version": "2.0.0",
-  "private": true,
   "description": "This package provides a builder and runner for running the suite as outside any formal test framework.",
   "keywords": [
     "XML",
@@ -19,6 +18,20 @@
   },
   "author": "Louis-Dominique Dubeau <ldd@lddubeau.com>",
   "license": "MIT AND W3C-19980720",
+  "exports": {
+    "./*": "./build/dist/*.js",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "build/dist/*"
+      ]
+    }
+  },
+  "files": [
+    "build/dist/**/*"
+  ],
   "dependencies": {
     "@xml-conformance-suite/js": "2.0.0",
     "minimist": "^1.2.5"
@@ -29,15 +42,10 @@
   "scripts": {
     "tsc": "tsc -p src",
     "generate-build-info": "mkdir -p build/dist/; ../../tasks/generate-build-info > build/dist/build-info.js",
-    "clean-package": "mkdir -p build/dist && ../../tasks/clean-package package.json build/dist/package.json",
-    "add-modules": "cd build/dist; ln -sf ../../node_modules .",
-    "build": "npm run generate-build-info && npm run tsc && npm run clean-package && npm run add-modules",
+    "build": "npm run generate-build-info && npm run tsc",
     "test": "npm run build && mocha",
     "posttest": "npm run lint",
-    "lint": "tslint -p src && tslint -p test && npmPkgJsonLint ./package.json",
-    "prepack": "node -e 'require(\"assert\")(!require(\"./package.json\").private)'",
-    "self:pack": "npm run test && cd build/dist/ && (packname=`npm pack --silent`; mv $packname ..; echo $packname)",
-    "self:publish": "cd build/dist && npm publish",
+    "lint": "tslint -p src -p test",
     "clean": "rm -rf build",
     "distclean": "rm -rf node_modules && npm run clean"
   }

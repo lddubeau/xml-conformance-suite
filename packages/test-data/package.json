@@ -1,7 +1,6 @@
 {
   "name": "@xml-conformance-suite/test-data",
   "version": "2.0.0",
-  "private": true,
   "description": "A conformance suite for tools that parse XML. This package contains the test data",
   "keywords": [
     "XML",
@@ -19,19 +18,17 @@
   },
   "author": "Louis-Dominique Dubeau <ldd@lddubeau.com>",
   "license": "MIT AND W3C-19980720",
+  "exports": {
+    "./*": "./build/dist/*",
+    "./package.json": "./package.json"
+  },
   "files": [
-    "cleaned/**/*",
-    "xmlconf/**/*"
+    "build/dist/**/*"
   ],
   "scripts": {
-    "clean-package": "mkdir -p build/dist && ../../tasks/clean-package package.json build/dist/package.json",
-    "build": "mkdir -p build/dist && cp -rp cleaned xmlconf build/dist && npm run clean-package",
+    "build": "mkdir -p build/dist && cp -rp cleaned xmlconf build/dist",
     "clean": "rm -rf build",
     "test": "npm run build",
-    "lint": "npmPkgJsonLint ./package.json",
-    "prepack": "node -e 'require(\"assert\")(!require(\"./package.json\").private)'",
-    "self:pack": "npm run test && cd build/dist/ && (packname=`npm pack --silent`; mv $packname ..; echo $packname)",
-    "self:publish": "cd build/dist && npm publish",
     "distclean": "npm run clean"
   }
 }
