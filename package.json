@@ -27,8 +27,8 @@
     "packages/karma"
   ],
   "devDependencies": {
-    "@commitlint/cli": "^16.1.0",
-    "@commitlint/config-angular": "^16.0.0",
+    "@commitlint/cli": "^16.2.1",
+    "@commitlint/config-angular": "^16.2.1",
     "@types/argparse": "^2.0.10",
     "@types/chai": "^4.3.0",
     "@types/mocha": "^9.1.0",
