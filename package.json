@@ -36,7 +36,7 @@
     "argparse": "^2.0.1",
     "chai": "^4.3.6",
     "conventional-changelog-cli": "^2.2.2",
-    "eslint": "^8.23.1",
+    "eslint": "^8.24.0",
     "eslint-config-lddubeau-base": "^6.1.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jsx-a11y": "^6.6.1",
