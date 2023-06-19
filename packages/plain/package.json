@@ -34,7 +34,7 @@
   ],
   "dependencies": {
     "@xml-conformance-suite/js": "2.0.0",
-    "minimist": "^1.2.7"
+    "minimist": "^1.2.8"
   },
   "peerDependencies": {
     "mocha": "6.x || 7.x || 8.x || 9.x"
