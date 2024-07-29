@@ -39,7 +39,7 @@
     "@xml-conformance-suite/test-data": "2.0.0"
   },
   "peerDependencies": {
-    "karma": "6.x"
+    "karma": "6.4.4"
   },
   "scripts": {
     "generate-build-info": "mkdir -p build/dist/; ../../tasks/generate-build-info > build/dist/build-info.js",
