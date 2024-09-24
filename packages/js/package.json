@@ -35,7 +35,7 @@
   "dependencies": {
     "@xml-conformance-suite/test-data": "2.0.0",
     "argparse": "^2.0.1",
-    "chai": "^4.3.7",
+    "chai": "^4.5.0",
     "minimist": "^1.2.7",
     "mocha": "^9.2.2",
     "saxes": "^6.0.0"
