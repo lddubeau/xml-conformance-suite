@@ -37,7 +37,7 @@
     "minimist": "^1.2.7"
   },
   "peerDependencies": {
-    "mocha": "6.x || 7.x || 8.x || 9.x"
+    "mocha": "6.x || 7.x || 8.x || 9.x || 10.x"
   },
   "scripts": {
     "tsc": "tsc -p src",

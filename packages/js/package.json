@@ -37,7 +37,7 @@
     "argparse": "^2.0.1",
     "chai": "^4.3.7",
     "minimist": "^1.2.7",
-    "mocha": "^9.2.2",
+    "mocha": "^10.7.3",
     "saxes": "^6.0.0"
   },
   "scripts": {
