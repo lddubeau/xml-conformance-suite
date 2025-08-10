@@ -31,7 +31,7 @@
     "@commitlint/config-angular": "^16.3.0",
     "@types/argparse": "^2.0.10",
     "@types/chai": "^4.3.4",
-    "@types/mocha": "^9.1.1",
+    "@types/mocha": "^10.0.10",
     "@types/sax": "^1.2.4",
     "argparse": "^2.0.1",
     "chai": "^4.3.7",
